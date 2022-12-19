@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build and start" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="Build.ps1" scriptParameters="true" workingDirectory="$FileDir$" executablePath="$PROJECT_DIR$/../../../../../WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe">
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>
