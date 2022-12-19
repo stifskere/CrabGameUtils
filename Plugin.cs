@@ -34,6 +34,7 @@ public class Plugin : BasePlugin, IConfig
         foreach (Type type in Assembly.GetAssembly(typeof(Extension)).GetTypes().Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(Extension))))
             ExtensionInstances.Add((Extension)System.Activator.CreateInstance(type, null));
         ExtensionInstances.Sort();
+
     }
     
 

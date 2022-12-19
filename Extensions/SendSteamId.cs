@@ -6,7 +6,8 @@ public class SendSteamId : Extension
 {
     public override void Start()
     {
-        ChatBox.Instance.ForceMessage("Hello World!");
+        ChatBox.Instance.ForceMessage("SteamIDSender has been loaded");
+        
     }
 
     public override void Update()

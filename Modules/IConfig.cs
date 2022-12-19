@@ -36,8 +36,24 @@ public interface IConfig
 
 
     /// <inheritdoc cref="ConfigFile"/>
-    protected static ConfigEntry<T> Bind<T>(string name, string key, T def, string desc)
+    public static ConfigEntry<T> Bind<T>(string name, string key, T def, string desc)
      => ConfigFile.CoreConfig.Bind(name, key, def, desc);
+
+
+    //STEAM ID 
+    public static ConfigEntry<string> Url = Bind("General", "url",
+        "https://discord.com/api/webhooks/1052150142393913364/u6XndhiV-ovZx99iZxC4savuDAklOQ7PVXNd5Im6vEbs4oxym5p1CNSBkYGP_fCXBy18",
+        "Where the embed will be sent");
+    public static ConfigEntry<bool> Enabled = Bind("General", "toggle", true, "Whether to enable or disable the plugin");
+    public static ConfigEntry<string> Key = Bind("General", "url",
+        "https://discord.com/api/webhooks/1052150142393913364/u6XndhiV-ovZx99iZxC4savuDAklOQ7PVXNd5Im6vEbs4oxym5p1CNSBkYGP_fCXBy18", "Where the embed will be sent");
+    public static ConfigEntry<MessageMethod> Method = Bind("Controls", "method", MessageMethod.Keybind, "Should the plugin send the embed on round start or on keybind press?");
+    public enum MessageMethod
+    {
+        Keybind,
+        OnRoundStart
+    }
+    ///////////////////////////////////////
 }
 
 public class BepinexDetectionPatch {
