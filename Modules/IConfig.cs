@@ -15,16 +15,17 @@ global using HarmonyLib;
 global using Il2CppSystem;
 global using Il2CppSystem.Collections.Generic;
 global using UnityEngine;
+global using System.Reflection;
 
 global using GameSettings = MonoBehaviourPublicObjomaOblogaTMObseprUnique;
 global using Input = UnityEngine.Input;
 global using SteamManager = MonoBehaviourPublicObInUIgaStCSBoStcuCSUnique;
 global using GameManager = MonoBehaviourPublicDi2UIObacspDi2UIObUnique;
-global using AssemblyCs = MonoBehaviourPublicGaplfoGaTrorplTrRiBoUnique;
+global using AssemblyCs = MonoBehaviourPublicGaroloGaObInCacachGaUnique;
 global using ChatBox = MonoBehaviourPublicRaovTMinTemeColoonCoUnique;
-global using EmbedList = System.Collections.Generic.List<CrabGameUtils.Embed>;
-global using FieldList = System.Collections.Generic.List<CrabGameUtils.EmbedField>;
 global using Random = Il2CppSystem.Random;
+global using SystemCollections = System.Collections.Generic;
+global using Type = System.Type;
 
 namespace CrabGameUtils.Modules;
 

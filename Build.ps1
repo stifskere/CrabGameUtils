@@ -13,8 +13,14 @@ if (!(Test-Path -Path ".\release")) {
 
 dotnet.exe build CrabGameUtils.csproj -a "win-x64" -c "Release" -o ".\release"
 
-Remove-Item "C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\plugins\CrabGameUtils.dll"
-Move-Item ".\release\CrabGameUtils.dll" "C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\plugins\CrabGameUtils.dll"
+$dll = "C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\plugins\CrabGameUtils.dll"
+if (Test-Path -Path $dll) {
+    Remove-Item $dll
+}
+
+Move-Item ".\release\CrabGameUtils.dll" $dll
+
+Remove-Variable dll
 
 Start-Sleep 1
 
