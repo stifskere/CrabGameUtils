@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrabGameUtils", "CrabGameUtils.csproj", "{7EC8281D-899C-4BCE-8F95-EED5B1EED779}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7EC8281D-899C-4BCE-8F95-EED5B1EED779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EC8281D-899C-4BCE-8F95-EED5B1EED779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EC8281D-899C-4BCE-8F95-EED5B1EED779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EC8281D-899C-4BCE-8F95-EED5B1EED779}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

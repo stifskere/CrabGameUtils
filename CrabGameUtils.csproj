@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>CrabGameUtils</AssemblyName>
+        <Description>A couple useful utils for crabgame as a bepinex plugin</Description>
+        <Version>1.0.0</Version>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="6.0.0-pre.1" />
+        <PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-pre.1" />
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" />
+        <PackageReference Include="Flurl" Version="3.0.6" />
+        <PackageReference Include="Flurl.Http" Version="4.0.0-pre2" />
+        <Reference Include="0Harmony">
+          <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass">
+          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2Cppmscorlib">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+</Project>
