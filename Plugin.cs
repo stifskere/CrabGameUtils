@@ -18,13 +18,13 @@ public class Plugin : BasePlugin, IConfig
     }
 
     [HarmonyPatch(typeof(AssemblyCs), "Start"), HarmonyPostfix]
-    public static void Start()
+    public static void Start(AssemblyCs __instance)
     {
         ChatBox.Instance.ForceMessage(Test.Value);
     }
 
     [HarmonyPatch(typeof(AssemblyCs), "Update"), HarmonyPostfix]
-    public static void Update()
+    public static void Update(AssemblyCs __instance)
     {
         
     }

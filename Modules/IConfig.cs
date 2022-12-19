@@ -20,7 +20,7 @@ global using GameSettings = MonoBehaviourPublicObjomaOblogaTMObseprUnique;
 global using Input = UnityEngine.Input;
 global using SteamManager = MonoBehaviourPublicObInUIgaStCSBoStcuCSUnique;
 global using GameManager = MonoBehaviourPublicDi2UIObacspDi2UIObUnique;
-global using AssemblyCs = MonoBehaviourPublicGaprLi1ObGaprInUnique;
+global using AssemblyCs = MonoBehaviourPublicGaplfoGaTrorplTrRiBoUnique;
 global using ChatBox = MonoBehaviourPublicRaovTMinTemeColoonCoUnique;
 
 namespace CrabGameUtils.Modules;
