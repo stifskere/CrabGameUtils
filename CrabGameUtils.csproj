@@ -20,10 +20,10 @@
           <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\0Harmony.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp">
-          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
+          <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass">
-          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Assembly-CSharp-firstpass.dll</HintPath>
+          <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Assembly-CSharp-firstpass.dll</HintPath>
         </Reference>
         <Reference Include="Il2Cppmscorlib">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
@@ -40,5 +40,17 @@
         <Reference Include="UnityEngine.UI">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
         </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="release\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="release\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="release\**" />
     </ItemGroup>
 </Project>
