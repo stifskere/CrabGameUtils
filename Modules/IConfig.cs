@@ -22,13 +22,16 @@ global using SteamManager = MonoBehaviourPublicObInUIgaStCSBoStcuCSUnique;
 global using GameManager = MonoBehaviourPublicDi2UIObacspDi2UIObUnique;
 global using AssemblyCs = MonoBehaviourPublicGaplfoGaTrorplTrRiBoUnique;
 global using ChatBox = MonoBehaviourPublicRaovTMinTemeColoonCoUnique;
+global using EmbedList = System.Collections.Generic.List<CrabGameUtils.Embed>;
+global using FieldList = System.Collections.Generic.List<CrabGameUtils.EmbedField>;
+global using Random = Il2CppSystem.Random;
 
 namespace CrabGameUtils.Modules;
 
 public interface IConfig
 {
-    protected static SteamManager Steam { get; set; } = SteamManager.Instance;
-    protected static Plugin Instance { get; set; } = null!;
+    public static SteamManager Steam { get; set; } = SteamManager.Instance;
+    public static Plugin Instance { get; set; } = null!;
 
 
     /// <inheritdoc cref="ConfigFile"/>
