@@ -1,11 +1,5 @@
-$game = Get-Process "Crab Game.exe" -ErrorAction SilentlyContinue
-if ($game) {
-    $game.CloseMainWindow()
-    if (!$game.HasExited) {
-        $game | Stop-Process -Force
-    }
-}
-Remove-Variable game
+
+Stop-Process -Name "Crab Game" -ErrorAction SilentlyContinue
 
 if (!(Test-Path -Path ".\release")) {
     mkdir ".\release" 

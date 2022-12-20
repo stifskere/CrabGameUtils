@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Build" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="Build.ps1" workingDirectory="$FileDir$" executablePath="$PROJECT_DIR$/../../../../../WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe">
+  <configuration default="false" name="Build" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="Build.ps1" workingDirectory="$ContentRoot$" executablePath="$PROJECT_DIR$/../../../../../WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe">
     <envs />
     <method v="2" />
   </configuration>

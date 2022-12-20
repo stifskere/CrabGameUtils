@@ -32,7 +32,7 @@
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
-            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
+          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.InputLegacyModule">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.InputLegacyModule.dll</HintPath>
