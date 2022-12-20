@@ -2,6 +2,7 @@
 
 namespace CrabGameUtils.Extensions;
 
+[ExtensionName("Send Steam ID")]
 public class SendSteamId : Extension
 {
     private DiscordWebhook _webhook = null!;
@@ -40,8 +41,6 @@ public class SendSteamId : Extension
     private async Task GetDataAndSendAsync()
     {
         ChatBox.Instance.ForceMessage("Sending server stats...");
-        
-        await Task.Delay(System.TimeSpan.FromSeconds(1));
 
         string descriptionFields = string.Empty;
         foreach (KeyValuePair<ulong, MonoBehaviourPublicCSstReshTrheObplBojuUnique> player in GameManager.Instance.activePlayers)
@@ -49,12 +48,10 @@ public class SendSteamId : Extension
         
         EmbedBuilder embed = new EmbedBuilder()
             .SetTitle("User list")
-            .SetDescription($"**Here is a list of players for the game with code:** `{Steam.currentLobby.m_SteamID}`\n**This game has:** `{GameManager.Instance.activePlayers.Count} players`\n{descriptionFields}")
+            .SetDescription($"**Here is a list of players for the game with code:** `{Steam.currentLobby.m_SteamID}`\n**This game has:** `{GameManager.Instance.activePlayers.Count} players`\n```{descriptionFields}```")
             .SetColor(RandomColor());
 
         await _webhook.SendAsync(embeds: new []{embed.Build()});
-        
-        ChatBox.Instance.ForceMessage("Should be sent.");
     }
     
     public enum Method

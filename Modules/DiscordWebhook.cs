@@ -25,18 +25,15 @@ public class DiscordWebhook
     {
         embeds ??= Array.Empty<Embed>();
         if (message == null && embeds.Length == 0) throw new System.Exception("At least a message or embed are required");
-        
-        HttpResponseMessage response = await _client.PostAsync(URL, new StringContent(JsonSerializer.Serialize(
+
+        await _client.PostAsync(URL, new StringContent(JsonSerializer.Serialize(
             new MessageObject
             {
                 Username = Username,
                 Content = message,
                 AvatarUrl = AvatarURL,
                 Embeds = embeds.Length == 0 ? null : embeds
-            }
-            ), Encoding.UTF8, "application/json"));
-
-        
+            }, new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json"));
     }
 
     private class MessageObject

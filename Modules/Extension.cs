@@ -33,7 +33,7 @@ public class ExtensionConfig<T>
 }
 
 [System.AttributeUsage(System.AttributeTargets.Class)]
-public class ExtensionNameAttribute : Attribute
+public class ExtensionNameAttribute : System.Attribute
 {
     public string Name;
     public ExtensionNameAttribute(string name)

@@ -46,7 +46,6 @@ internal interface IEmbed
 
 public class EmbedBuilder : IEmbed
 {
-
     public CAuthor? Author { get; set; }
     public string? Title { get; set; }
     public string? URL { get; set; }
@@ -123,8 +122,9 @@ public class Embed : IEmbed
     public Embed(EmbedBuilder embed)
     {
         foreach (PropertyInfo prop in embed.GetType().GetProperties())
+        {
             GetType().GetProperty(prop.Name)!.SetValue(this, prop.GetValue(embed));
-        
+        }
     }
     
     [JsonPropertyName("author")] public CAuthor? Author { get; set; }
@@ -132,7 +132,7 @@ public class Embed : IEmbed
     [JsonPropertyName("url")] public string? URL { get; set; }
     [JsonPropertyName("description")] public string? Description { get; set; }
     [JsonPropertyName("color")] public uint Color { get; set; }
-    [JsonPropertyName("fields")] public SystemCollections.List<CField> Fields { get; } = new();
+    [JsonPropertyName("fields")] public SystemCollections.List<CField> Fields { get; set; } = new();
     [JsonPropertyName("thumbnail")] public CThumbnail? Thumbnail { get; set; }
     [JsonPropertyName("image")] public CImage? Image { get; set; }
     [JsonPropertyName("footer")] public CFooter? Footer { get; set; }
