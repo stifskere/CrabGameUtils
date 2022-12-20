@@ -1,5 +1,6 @@
 ﻿
 using CrabGameUtils.Modules;
+using Attribute = System.Attribute;
 
 namespace CrabGameUtils;
 
@@ -23,10 +24,17 @@ public class Plugin : BasePlugin
         
         foreach (Type type in Assembly.GetAssembly(typeof(Extension)).GetTypes().Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(Extension))))
         {
+            string name = string.Empty;
+            if (type.CustomAttributes.FirstOrDefault(t => t.GetType() == typeof(ExtensionNameAttribute)) is var a && a != null)
+            {
+                
+            }
             Extension instance = (Extension)System.Activator.CreateInstance(type, null);
             ExtensionInstances.Add(instance);
-            foreach (PropertyInfo property in type.GetProperties().Where(p => p.PropertyType.Name.Contains("ExtensionConfig")))
-                property.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(property.GetValue(instance), new object[] { type.Name });
+            foreach (FieldInfo field in type.GetFields().Where(p => p.FieldType.Name.Contains("ExtensionConfig")))
+            {
+                field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { type.Name });
+            }
         }
         ExtensionInstances.Sort();
     }

@@ -1,4 +1,8 @@
-﻿namespace CrabGameUtils.Modules;
+﻿using System;
+using Attribute = Il2CppSystem.Attribute;
+using AttributeTargets = Il2CppSystem.AttributeTargets;
+
+namespace CrabGameUtils.Modules;
 
 public abstract class Extension
 {
@@ -12,7 +16,8 @@ public class ExtensionConfig<T>
     private readonly T _defaultValue;
     private readonly string _description;
 
-    public T Value { get; protected set; } = default!;
+    private T _actual = default!;
+    public T Value { get => _actual; set => _actual = value; }
     
     public ExtensionConfig(string settingName, T defaultValue, string description)
     {
@@ -24,5 +29,15 @@ public class ExtensionConfig<T>
     public void InitConfig(string methodName)
     {
         Value = StaticConfig.Bind(methodName, _settingName, _defaultValue, _description).Value;
+    }
+}
+
+[System.AttributeUsage(System.AttributeTargets.Class)]
+public class ExtensionNameAttribute : Attribute
+{
+    public string Name;
+    public ExtensionNameAttribute(string name)
+    {
+        Name = name;
     }
 }

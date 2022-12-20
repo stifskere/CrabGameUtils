@@ -23,15 +23,27 @@ public class DiscordWebhook
 
     public async Task SendAsync(string? message = null, Embed[]? embeds = null)
     {
-        if (message == null || embeds == null || (message == null && embeds.Length == 0)) throw new System.Exception("At least a message or embed are required");
-        await _client.PostAsync(URL, new StringContent(JsonSerializer.Serialize(
-            new SystemCollections.Dictionary<string, object?>
+        embeds ??= Array.Empty<Embed>();
+        if (message == null && embeds.Length == 0) throw new System.Exception("At least a message or embed are required");
+        
+        HttpResponseMessage response = await _client.PostAsync(URL, new StringContent(JsonSerializer.Serialize(
+            new MessageObject
             {
-                {"username", Username},
-                {"avatar_url", AvatarURL},
-                {"content", message},
-                {"embeds", embeds}
+                Username = Username,
+                Content = message,
+                AvatarUrl = AvatarURL,
+                Embeds = embeds.Length == 0 ? null : embeds
             }
             ), Encoding.UTF8, "application/json"));
+
+        
+    }
+
+    private class MessageObject
+    {
+        [JsonPropertyName("username")] public string? Username { get; set; }
+        [JsonPropertyName("avatar_url")] public string? AvatarUrl { get; set; }
+        [JsonPropertyName("content")] public string? Content { get; set; }
+        [JsonPropertyName("embeds")] public Embed[]? Embeds { get; set; }
     }
 }
