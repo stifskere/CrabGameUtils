@@ -14,8 +14,7 @@ public class Plugin : BasePlugin
     {
         StaticConfig = Config;
         Instance = this;
-        Harmony.CreateAndPatchAll(typeof(Plugin));
-        using Harmony harmony = new Harmony("PlayerInfo");
+        var harmony = new Harmony("CrabGameUtils");
         harmony.PatchAll();
         harmony.PatchAll(typeof(BepinexDetectionPatch));
         
