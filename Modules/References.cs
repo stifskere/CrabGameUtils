@@ -1,5 +1,6 @@
 ﻿// ReSharper disable RedundantUsingDirective.Global
 
+global using CrabGameUtils.Modules;
 global using System.IO;
 global using System.Linq;
 global using System.Net.Http;

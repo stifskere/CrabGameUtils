@@ -1,5 +1,4 @@
-﻿using CrabGameUtils.Modules;
-
+﻿
 namespace CrabGameUtils.Extensions;
 
 [ExtensionName("Send Steam ID")]

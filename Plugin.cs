@@ -1,6 +1,4 @@
 ﻿
-using CrabGameUtils.Modules;
-
 namespace CrabGameUtils;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
