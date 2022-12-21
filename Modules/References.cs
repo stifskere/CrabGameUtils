@@ -23,7 +23,6 @@ global using SixLabors.ImageSharp.PixelFormats;
 global using SixLabors.ImageSharp.Drawing;
 global using System;
 global using System.Globalization;
-global using CrabGameUtils.Modules;
 global using SixLabors.ImageSharp.Formats.Png;
 
 global using Anotations = JetBrains.Annotations;

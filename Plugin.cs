@@ -14,7 +14,8 @@ public class Plugin : BasePlugin
     {
         StaticConfig = Config;
         Instance = this;
-        var harmony = new Harmony("CrabGameUtils");
+        Harmony.CreateAndPatchAll(typeof(Plugin));
+        Harmony harmony = new Harmony("CrabGameUtils");
         harmony.PatchAll();
         harmony.PatchAll(typeof(BepinexDetectionPatch));
         
@@ -28,7 +29,6 @@ public class Plugin : BasePlugin
                 field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name ?? type.Name });
             }
         }
-        ExtensionInstances.Sort();
     }
     
 
