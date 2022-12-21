@@ -1,4 +1,5 @@
-﻿namespace CrabGameUtils.Modules;
+﻿
+namespace CrabGameUtils.Modules;
 
 public class DiscordWebhook
 {
@@ -7,10 +8,12 @@ public class DiscordWebhook
     private string? AvatarURL { get; }
     
     private readonly HttpClient _client = new();
+
+    public bool IsValid { get; } = true;
     
     public DiscordWebhook(string url, string username, string? avatarURL = null)
     {
-        if (!CheckWebhook(url).Result) throw new System.Exception("The url is invalid");
+        if (!CheckWebhook(url).Result) IsValid = false;
         URL = url;
         Username = username;
         AvatarURL = avatarURL!;
@@ -23,7 +26,7 @@ public class DiscordWebhook
 
     public async Task SendAsync(string? message = null, Embed[]? embeds = null)
     {
-        embeds ??= Array.Empty<Embed>();
+        embeds ??= System.Array.Empty<Embed>();
         if (message == null && embeds.Length == 0) throw new System.Exception("At least a message or embed are required");
 
         await _client.PostAsync(URL, new StringContent(JsonSerializer.Serialize(

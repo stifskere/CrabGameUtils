@@ -16,8 +16,16 @@ global using Il2CppSystem;
 global using Il2CppSystem.Collections.Generic;
 global using UnityEngine;
 global using System.Reflection;
-global using Anotations = JetBrains.Annotations;
+global using System.Drawing;
+global using SixLabors.ImageSharp;
+global using SixLabors.ImageSharp.PixelFormats;
+global using SixLabors.ImageSharp.Drawing;
+global using System;
+global using System.Globalization;
+global using CrabGameUtils.Modules;
+global using SixLabors.ImageSharp.Formats.Png;
 
+global using Anotations = JetBrains.Annotations;
 global using GameSettings = MonoBehaviourPublicObjomaOblogaTMObseprUnique;
 global using Input = UnityEngine.Input;
 global using SteamManager = MonoBehaviourPublicObInUIgaStCSBoStcuCSUnique;
@@ -27,6 +35,7 @@ global using ChatBox = MonoBehaviourPublicRaovTMinTemeColoonCoUnique;
 global using Random = Il2CppSystem.Random;
 global using SystemCollections = System.Collections.Generic;
 global using Type = System.Type;
+global using KeyCode = BepInEx.IL2CPP.UnityEngine.KeyCode;
 
 global using static CrabGameUtils.Plugin;
 global using static CrabGameUtils.CustomMethods;

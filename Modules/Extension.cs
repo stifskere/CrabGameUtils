@@ -1,13 +1,17 @@
-﻿using System;
-using Attribute = Il2CppSystem.Attribute;
-using AttributeTargets = Il2CppSystem.AttributeTargets;
-
+﻿
 namespace CrabGameUtils.Modules;
 
 public abstract class Extension
 {
+    public ExtensionConfig<bool> Enabled = new("toggle", true, "Whether to enable or disable the plugin");
     public abstract void Start();
     public abstract void Update();
+
+    public void ThrowError(string message)
+    {
+        Enabled.Value = false;
+        ChatBox.Instance.ForceMessage(message);
+    }
 }
 
 public class ExtensionConfig<T>
@@ -35,9 +39,5 @@ public class ExtensionConfig<T>
 [System.AttributeUsage(System.AttributeTargets.Class)]
 public class ExtensionNameAttribute : System.Attribute
 {
-    public string Name;
-    public ExtensionNameAttribute(string name)
-    {
-        Name = name;
-    }
+    public ExtensionNameAttribute(string name) { }
 }

@@ -1,6 +1,5 @@
 ﻿
 using CrabGameUtils.Modules;
-using Attribute = System.Attribute;
 
 namespace CrabGameUtils;
 
@@ -40,16 +39,14 @@ public class Plugin : BasePlugin
     public static void Start(AssemblyCs __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances)
-            extension.Start();
+        foreach (Extension extension in ExtensionInstances.Where(extension => extension.Enabled.Value)) extension.Start();
     }
 
     [HarmonyPatch(typeof(AssemblyCs), "Update"), HarmonyPostfix]
     public static void Update(AssemblyCs __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances)
-            extension.Update();
+        foreach (Extension extension in ExtensionInstances.Where(extension => extension.Enabled.Value)) extension.Update();
     }
 }
 
