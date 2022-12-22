@@ -13,13 +13,13 @@ public class GameCapture : Extension
     {
         if (!System.Enum.TryParse(Key.Value.Length == 1 ? Key.Value.ToUpper() : Key.Value, out _key))
         {
-            ThrowError("GameCapture Errored, the key is not valid.");
+            ThrowError("GameCapture Error, the key is not valid.");
             return;
         }
 
         if (!Directory.Exists(Path.Value))
         {
-            ThrowError("GameCapture Errored, the path is not valid.");
+            ThrowError("GameCapture Error, the path is not valid.");
             return;
         }
         

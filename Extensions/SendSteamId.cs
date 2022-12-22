@@ -16,19 +16,19 @@ public class bSendSteamId : Extension
 
         if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
         {
-            ThrowError("SteamIdSender Errored, the keybind is not valid.");
+            ThrowError("SteamIdSender Error, the keybind is not valid.");
             return;
         }
 
         if (URL.Value == "Your webhook")
         {
-            ThrowError("SteamIdSender Errored, you need to change the webhook in your config file.");
+            ThrowError("SteamIdSender Error, you need to change the webhook in your config file.");
             return;
         }
         
         if (!_webhook.IsValid)
         {
-            ThrowError("SteamIdSender Errored, the webhook is not valid.<color>");
+            ThrowError("SteamIdSender Error, the webhook is not valid.");
             return;
         }
         
