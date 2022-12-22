@@ -42,12 +42,8 @@ public class GameCapture : Extension
             camera.targetTexture = null;
             RenderTexture.active = null;
             UnityEngine.Object.Destroy(rt);
-            byte[] bytes = screenShot.GetRawTextureData();
-            using Image<Rgb24> img = new(resWidth, resHeight);
-            img.CopyPixelDataTo(new Span<byte>(bytes));
-            string actualPath = $@"{Path.Value}\{System.DateTime.Now.ToString(CultureInfo.CurrentCulture)}.png";
-            img.Save(actualPath, new PngEncoder());
-            ChatBox.Instance.ForceMessage($"Image saved to: {actualPath}");
+            byte[] bytes = screenShot.EncodeToPNG();
+            File.WriteAllBytes($"{Path.Value}\\{System.DateTime.Now.ToString("HH:mm:ss yyyy-MM-dd")}.png",bytes);
         }
     }
 }

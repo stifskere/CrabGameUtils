@@ -2,7 +2,7 @@
 namespace CrabGameUtils.Extensions;
 
 [ExtensionName("Send Steam ID")]
-public class SendSteamId : Extension
+public class bSendSteamId : Extension
 {
     private DiscordWebhook _webhook = null!;
     
