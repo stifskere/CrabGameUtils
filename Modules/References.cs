@@ -25,12 +25,13 @@ global using System;
 global using System.Globalization;
 global using SixLabors.ImageSharp.Formats.Png;
 
-global using Anotations = JetBrains.Annotations;
+global using Annotations = JetBrains.Annotations;
 global using GameSettings = MonoBehaviourPublicObjomaOblogaTMObseprUnique;
 global using Input = UnityEngine.Input;
 global using SteamManager = MonoBehaviourPublicObInUIgaStCSBoStcuCSUnique;
 global using GameManager = MonoBehaviourPublicDi2UIObacspDi2UIObUnique;
-global using AssemblyCs = MonoBehaviourPublicGaroloGaObInCacachGaUnique;
+//Thanks 07Moon for the name :D
+global using GameUI = MonoBehaviourPublicGaroloGaObInCacachGaUnique;
 global using ChatBox = MonoBehaviourPublicRaovTMinTemeColoonCoUnique;
 global using Random = Il2CppSystem.Random;
 global using SystemCollections = System.Collections.Generic;

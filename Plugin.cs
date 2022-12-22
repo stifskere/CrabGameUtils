@@ -32,15 +32,15 @@ public class Plugin : BasePlugin
     }
     
 
-    [HarmonyPatch(typeof(AssemblyCs), "Start"), HarmonyPostfix]
-    public static void Start(AssemblyCs __instance)
+    [HarmonyPatch(typeof(GameUI), "Start"), HarmonyPostfix]
+    public static void Start(GameUI __instance)
     {
         Steam = SteamManager.Instance;
         foreach (Extension extension in ExtensionInstances.Where(extension => extension.Enabled.Value)) extension.Start();
     }
 
-    [HarmonyPatch(typeof(AssemblyCs), "Update"), HarmonyPostfix]
-    public static void Update(AssemblyCs __instance)
+    [HarmonyPatch(typeof(GameUI), "Update"), HarmonyPostfix]
+    public static void Update(GameUI __instance)
     {
         Steam = SteamManager.Instance;
         foreach (Extension extension in ExtensionInstances.Where(extension => extension.Enabled.Value)) extension.Update();
