@@ -23,7 +23,7 @@ public class GameCapture : Extension
             return;
         }
         
-        ChatBox.Instance.ForceMessage($"GameCapture Loaded, press {Key.Value} to screenshot");
+        ChatBox.Instance.ForceMessage($"<color=#00FFFF>GameCapture Loaded, press {Key.Value} to screenshot</color>");
     }
 
     public override void Update()
@@ -44,7 +44,7 @@ public class GameCapture : Extension
             byte[] bytes = screenShot.EncodeToPNG();
             string curPath = System.IO.Path.Combine(Path.Value, $"{System.DateTime.Now:HHmmssyyyyMMdd}.png");
             File.WriteAllBytes(curPath, bytes);
-            ChatBox.Instance.ForceMessage($"Screenshoot saved to \"{curPath}\" ");
+            ChatBox.Instance.ForceMessage($"<color=#00FFFF>Screenshoot saved to:</color> <color=orange>\"{curPath}\"</color>");
         }
     }
 }
