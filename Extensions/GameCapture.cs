@@ -28,7 +28,6 @@ public class GameCapture : Extension
 
     public override void Update()
     {
-        //can't use a damn library
         if (Input.GetKeyDown((UnityEngine.KeyCode)_key))
         {
             Camera? camera = Camera.main;
@@ -43,7 +42,9 @@ public class GameCapture : Extension
             RenderTexture.active = null;
             UnityEngine.Object.Destroy(rt);
             byte[] bytes = screenShot.EncodeToPNG();
-            File.WriteAllBytes($"{Path.Value}\\{System.DateTime.Now.ToString("HH:mm:ss yyyy-MM-dd")}.png",bytes);
+            string curPath = System.IO.Path.Combine(Path.Value, $"{System.DateTime.Now:HHmmssyyyyMMdd}.png");
+            File.WriteAllBytes(curPath, bytes);
+            ChatBox.Instance.ForceMessage($"Screenshoot saved to \"{curPath}\" ");
         }
     }
 }

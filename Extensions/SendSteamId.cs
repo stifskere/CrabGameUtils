@@ -6,7 +6,7 @@ public class bSendSteamId : Extension
 {
     private DiscordWebhook _webhook = null!;
     
-    public ExtensionConfig<string> URL = new("url", "https://discord.com/api/webhooks/1052150142393913364/u6XndhiV-ovZx99iZxC4savuDAklOQ7PVXNd5Im6vEbs4oxym5p1CNSBkYGP_fCXBy18", "Where the embed will be sent");
+    public ExtensionConfig<string> URL = new("url", "Your webhook", "Where the embed will be sent");
     public ExtensionConfig<string> Key = new("key", "p", "What keybind should the plugin use to send the embed");
     public ExtensionConfig<Method> MessageMethod = new("method", Method.Keybind, "Should the plugin send the embed on round start or on keybind press?");
     
@@ -17,6 +17,12 @@ public class bSendSteamId : Extension
         if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
         {
             ThrowError("SteamIdSender Errored, the keybind is not valid.");
+            return;
+        }
+
+        if (URL.Value == "Your webhook")
+        {
+            ThrowError("SteamIdSender Errored, you need to change the webhook in your config file.");
             return;
         }
         
