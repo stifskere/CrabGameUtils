@@ -38,7 +38,7 @@ internal interface IEmbed
     public string? URL { get; set; }
     public string? Description { get; set; }
     public uint Color { get; set; }
-    public SystemCollections.List<CField> Fields { get; }
+    public System.Collections.Generic.List<CField>? Fields { get; }
     public CThumbnail? Thumbnail { get; set; }
     public CImage? Image { get; set; }
     public CFooter? Footer { get; set; }
@@ -51,7 +51,7 @@ public class EmbedBuilder : IEmbed
     public string? URL { get; set; }
     public string? Description { get; set; }
     public uint Color { get; set; }
-    public SystemCollections.List<CField> Fields { get; } = new();
+    public System.Collections.Generic.List<CField>? Fields { get; } = new();
     public CThumbnail? Thumbnail { get; set; }
     public CImage? Image { get; set; }
     public CFooter? Footer { get; set; }
@@ -89,7 +89,7 @@ public class EmbedBuilder : IEmbed
 
     public EmbedBuilder AddField(string name, string value, bool inline = false)
     {
-        Fields.Add(new CField{Name = name, Value = value, InLine = inline});
+        Fields!.Add(new CField{Name = name, Value = value, InLine = inline});
         return this;
     }
 
@@ -132,7 +132,7 @@ public class Embed : IEmbed
     [JsonPropertyName("url")] public string? URL { get; set; }
     [JsonPropertyName("description")] public string? Description { get; set; }
     [JsonPropertyName("color")] public uint Color { get; set; }
-    [JsonPropertyName("fields")] public SystemCollections.List<CField> Fields { get; set; }
+    [JsonPropertyName("fields")] public System.Collections.Generic.List<CField>? Fields { get; set; }
     [JsonPropertyName("thumbnail")] public CThumbnail? Thumbnail { get; set; }
     [JsonPropertyName("image")] public CImage? Image { get; set; }
     [JsonPropertyName("footer")] public CFooter? Footer { get; set; }
