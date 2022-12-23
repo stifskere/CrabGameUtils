@@ -132,7 +132,7 @@ public class Embed : IEmbed
     [JsonPropertyName("url")] public string? URL { get; set; }
     [JsonPropertyName("description")] public string? Description { get; set; }
     [JsonPropertyName("color")] public uint Color { get; set; }
-    [JsonPropertyName("fields")] public SystemCollections.List<CField> Fields { get; set; } = new();
+    [JsonPropertyName("fields")] public SystemCollections.List<CField> Fields { get; set; }
     [JsonPropertyName("thumbnail")] public CThumbnail? Thumbnail { get; set; }
     [JsonPropertyName("image")] public CImage? Image { get; set; }
     [JsonPropertyName("footer")] public CFooter? Footer { get; set; }

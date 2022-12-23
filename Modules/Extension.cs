@@ -7,10 +7,11 @@ public abstract class Extension
     public abstract void Start();
     public abstract void Update();
 
-    public void ThrowError(string message)
+    protected void ThrowError(string message)
     {
         Enabled.Value = false;
         ChatBox.Instance.ForceMessage($"<color=red>{message}</color>");
+        ExtensionInstances.Remove(this);
     }
 }
 
@@ -20,9 +21,8 @@ public class ExtensionConfig<T>
     private readonly T _defaultValue;
     private readonly string _description;
 
-    private T _actual = default!;
-    public T Value { get => _actual; set => _actual = value; }
-    
+    public T Value { get; set; } = default!;
+
     public ExtensionConfig(string settingName, T defaultValue, string description)
     {
         _settingName = settingName;

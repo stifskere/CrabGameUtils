@@ -28,7 +28,7 @@ public class GameCapture : Extension
 
     public override void Update()
     {
-        if (Input.GetKeyDown((UnityEngine.KeyCode)_key))
+        if (Input.GetKeyDown((UnityEngine.KeyCode)_key) && !ChatBox.Instance.inputField.isFocused)
         {
             Camera? camera = Camera.main;
             int resWidth = Screen.width, resHeight = Screen.height;

@@ -27,7 +27,7 @@ global using GameSettings = MonoBehaviourPublicObjomaOblogaTMObseprUnique;
 global using Input = UnityEngine.Input;
 global using SteamManager = MonoBehaviourPublicObInUIgaStCSBoStcuCSUnique;
 global using GameManager = MonoBehaviourPublicDi2UIObacspDi2UIObUnique;
-
+global using CPlayer = MonoBehaviourPublicCSstReshTrheObplBojuUnique;
 //Thanks o7Moon for the name :D
 global using GameUI = MonoBehaviourPublicGaroloGaObInCacachGaUnique;
 global using ChatBox = MonoBehaviourPublicRaovTMinTemeColoonCoUnique;

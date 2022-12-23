@@ -2,7 +2,7 @@
 namespace CrabGameUtils.Extensions;
 
 [ExtensionName("Send Steam ID")]
-public class bSendSteamId : Extension
+public class SendSteamId : Extension
 {
     private DiscordWebhook _webhook = null!;
     
@@ -12,7 +12,7 @@ public class bSendSteamId : Extension
     
     public override void Start()
     {
-        _webhook = new DiscordWebhook(URL.Value, "SteamIdSender");
+        _webhook = new DiscordWebhook(URL.Value, "SteamIdSender", debug: WebhookDebugMode.Always);
 
         if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
         {
@@ -44,7 +44,7 @@ public class bSendSteamId : Extension
 
     public override void Update()
     {
-        if (Input.GetKeyDown(Key.Value) && MessageMethod.Value == Method.Keybind)
+        if (Input.GetKeyDown(Key.Value) && MessageMethod.Value == Method.Keybind && !ChatBox.Instance.inputField.isFocused)
         {
             _ = GetDataAndSendAsync();
         }
@@ -55,9 +55,9 @@ public class bSendSteamId : Extension
         ChatBox.Instance.ForceMessage("<color=#00FFFF>Sending server stats...</color>");
 
         string descriptionFields = string.Empty;
-        foreach (KeyValuePair<ulong, MonoBehaviourPublicCSstReshTrheObplBojuUnique> player in GameManager.Instance.activePlayers)
+        foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
             descriptionFields += $"\u001b[33mName\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.username ?? "username not found."}\u001b[0m\n\u001b[33mSteamID64\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.steamProfile.m_SteamID.ToString() ?? "user steam id not found"}\u001b[0m\n\u001b[33mNumber\u001b[0m\u001b[30m:\u001b[0m \u001b[32m #{player.Value.playerNumber.ToString()}\u001b[0m\n\n";
-        foreach (KeyValuePair<ulong, MonoBehaviourPublicCSstReshTrheObplBojuUnique> player in GameManager.Instance.spectators)
+        foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.spectators)
             descriptionFields += $"\u001b[33mName\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.username ??= "username not found."}\u001b[0m\n\u001b[33mSteamID64\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.steamProfile.m_SteamID.ToString() ?? "user steam id not found"}\u001b[0m\n\u001b[33mNumber\u001b[0m\u001b[30m:\u001b[0m \u001b[32m Spectator \u001b[0m\n\n";
 
         EmbedBuilder embed = new EmbedBuilder()
@@ -65,7 +65,9 @@ public class bSendSteamId : Extension
             .SetDescription($"**Here is a list of players for the game with code:** `{Steam.currentLobby.m_SteamID}`\n**This game has:** `{GameManager.Instance.activePlayers.Count} players`\n```ansi\n{descriptionFields}```")
             .SetColor(RandomColor());
 
-        await _webhook.SendAsync(embeds: new []{embed.Build()});
+        //[join game](steam://joinlobby/1782210/{Steam.currentLobby.m_SteamID}/{SteamManager.Instance.prop_CSteamID_0})
+        
+        await _webhook.SendAsync(embeds: new[] { embed.Build() });
     }
     
     public enum Method

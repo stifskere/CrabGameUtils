@@ -8,7 +8,7 @@ public class Plugin : BasePlugin
     public static Plugin Instance { get; set; } = null!;
     public static ConfigFile StaticConfig { get; set; } = null!;
     
-    private static SystemCollections.List<Extension> ExtensionInstances { get; } = new();
+    public static SystemCollections.List<Extension> ExtensionInstances { get; } = new();
     
     public override void Load()
     {
