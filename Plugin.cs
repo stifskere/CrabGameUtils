@@ -23,11 +23,10 @@ public class Plugin : BasePlugin
         {
             string? name = type.GetCustomAttributesData().First(a => a.AttributeType.Name == "ExtensionNameAttribute").ConstructorArguments.First().Value?.ToString();
             Extension instance = (Extension)System.Activator.CreateInstance(type, null);
-            ExtensionInstances.Add(instance);
             foreach (FieldInfo field in type.GetFields().Where(p => p.FieldType.Name.Contains("ExtensionConfig")))
-            {
                 field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name ?? type.Name });
-            }
+            if (!instance.Enabled.Value) continue;
+            ExtensionInstances.Add(instance);
         }
     }
     
@@ -36,14 +35,14 @@ public class Plugin : BasePlugin
     public static void Start(GameUI __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances.Where(extension => extension.Enabled.Value)) extension.Start();
+        foreach (Extension extension in ExtensionInstances) extension.Start();
     }
 
     [HarmonyPatch(typeof(GameUI), "Update"), HarmonyPostfix]
     public static void Update(GameUI __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances.Where(extension => extension.Enabled.Value)) extension.Update();
+        foreach (Extension extension in ExtensionInstances) extension.Update();
     }
 }
 
