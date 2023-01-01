@@ -6,7 +6,7 @@ public abstract class Extension
     public ExtensionConfig<bool> Enabled = new("toggle", true, "Whether to enable or disable the plugin");
     public abstract void Start();
     public abstract void Update();
-
+    
     protected void ThrowError(string message)
     {
         Enabled.Value = false;
