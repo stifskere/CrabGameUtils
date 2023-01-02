@@ -9,7 +9,7 @@ public class Glow : Extension
 {
     public ExtensionConfig<string> Key = new("key", "i", "the key to enable or disable ");
     
-    private bool _enabled = true;
+    private bool _enabled = false;
     private GameObject _sun = null!;
     private Color _defaultAmbient;
     private System.Collections.Generic.Dictionary<int, Color> _defaultObjectColors = new();
