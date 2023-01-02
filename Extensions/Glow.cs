@@ -1,5 +1,6 @@
 ﻿
 using Color = UnityEngine.Color;
+using Console = System.Console;
 using Object = UnityEngine.Object;
 
 namespace CrabGameUtils.Extensions;
@@ -16,9 +17,8 @@ public class Glow : Extension
 
     public override void Start()
     {
-         _defaultObjectColors = new();
         if (!Enabled.Value) return;
-        
+        _defaultObjectColors = new();
         if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
         {
             ThrowError("Party errored, the keycode is not valid.");
@@ -80,7 +80,7 @@ public class Glow : Extension
             light.transform.position = player.Value.transform.position + new Vector3(0, 2, 0);
         }
 
-        foreach (GameObject gameObject in Object.FindObjectsOfType<GameObject>())
+        foreach (GameObject gameObject in Object.FindObjectsOfType<GameObject>().Where(a => a.name.Contains("Light-")))
         {
             MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
             if (!renderer) continue;
