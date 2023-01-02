@@ -12,10 +12,11 @@ public class Glow : Extension
     private bool _enabled = true;
     private GameObject _sun = null!;
     private Color _defaultAmbient;
-    private readonly System.Collections.Generic.Dictionary<int, Color> _defaultObjectColors = new();
+    private System.Collections.Generic.Dictionary<int, Color> _defaultObjectColors = new();
 
     public override void Start()
     {
+         _defaultObjectColors = new();
         if (!Enabled.Value) return;
         
         if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
