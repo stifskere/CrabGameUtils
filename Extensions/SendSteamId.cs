@@ -7,14 +7,14 @@ public class SendSteamId : Extension
     private DiscordWebhook _webhook = null!;
     
     public ExtensionConfig<string> URL = new("url", "Your webhook", "Where the embed will be sent");
-    public ExtensionConfig<string> Key = new("key", "p", "What keybind should the plugin use to send the embed");
+    public ExtensionConfig<string> Key = new("key", "P", "What keybind should the plugin use to send the embed");
     public ExtensionConfig<Method> MessageMethod = new("method", Method.Keybind, "Should the plugin send the embed on round start or on keybind press?");
     
     public override void Start()
     {
         _webhook = new DiscordWebhook(URL.Value, "SteamIdSender", debug: WebhookDebugMode.OnError);
 
-        if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
+        if (!System.Enum.TryParse(Key.Value, out KeyCode _))
         {
             ThrowError("SteamIdSender Error, the keybind is not valid.");
             return;
@@ -44,7 +44,7 @@ public class SendSteamId : Extension
 
     public override void Update()
     {
-        if (Input.GetKeyDown(Key.Value) && MessageMethod.Value == Method.Keybind && !ChatBox.Instance.inputField.isFocused)
+        if (Input.GetKeyDown(System.Enum.Parse<UnityEngine.KeyCode>(Key.Value)) && MessageMethod.Value == Method.Keybind && !ChatBox.Instance.inputField.isFocused)
         {
             _ = GetDataAndSendAsync();
         }

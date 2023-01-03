@@ -6,13 +6,13 @@ namespace CrabGameUtils.Extensions;
 [ExtensionName("Player glow")]
 public class Glow : Extension
 {
-    public ExtensionConfig<string> Key = new("key", "i", "the key to enable or disable ");
+    public ExtensionConfig<string> Key = new("key", "I", "the key to enable or disable");
     
     private bool _enabled;
     private GameObject _sun = null!;
     private Color _defaultAmbient;
-    private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
-    private static System.Collections.Generic.Dictionary<int, Color> _lightColors = default!;
+    private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
+    private System.Collections.Generic.Dictionary<int, Color> _lightColors = default!;
     private System.Collections.Generic.Dictionary<ulong, GameObject> _playerGameObjects = default!;
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     private static readonly int Color1 = Shader.PropertyToID("_Color");
@@ -23,7 +23,7 @@ public class Glow : Extension
         _materials = new();
         _lightColors = new();
         _playerGameObjects = new();
-        if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
+        if (!System.Enum.TryParse(Key.Value, out KeyCode _))
         {
             ThrowError("Party errored, the keycode is not valid.");
             return;
@@ -53,7 +53,7 @@ public class Glow : Extension
     
     public override void Update()
     {
-        if (Input.GetKeyDown(Key.Value.ToLower()) && !ChatBox.Instance.inputField.isFocused)
+        if (Input.GetKeyDown(System.Enum.Parse<UnityEngine.KeyCode>(Key.Value)) && !ChatBox.Instance.inputField.isFocused)
         {
             _enabled = !_enabled;
             _sun.active = !_enabled;
@@ -95,12 +95,15 @@ public class Glow : Extension
         }
 
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+        {
+            if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
             foreach (Material rendererMaterial in renderer.materials)
             {
                 rendererMaterial.SetColor(Color1, RotateColor(rendererMaterial.color));
                 rendererMaterial.SetColor(EmissionColor, rendererMaterial.color);
             }
-        
+        }
+
         foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
             light.color = RotateColor(light.color);
     }
@@ -110,8 +113,7 @@ public class Glow : Extension
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         {
             if (_materials.ContainsKey(renderer.GetInstanceID())) continue;
-            System.Collections.Generic.List<Material> materials = renderer.materials.Select(material => new Material(material)).ToList();
-            _materials[renderer.GetInstanceID()] = materials;
+            _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
         }
         
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())

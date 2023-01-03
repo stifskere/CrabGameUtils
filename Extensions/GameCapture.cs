@@ -5,13 +5,11 @@ namespace CrabGameUtils.Extensions;
 public class GameCapture : Extension
 {
     public ExtensionConfig<string> Path = new("path", $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures)}", "Where to save the image");
-    public ExtensionConfig<string> Key = new("key", "o", "The key that should save the screenshot");
-
-    private KeyCode _key;
+    public ExtensionConfig<string> Key = new("key", "O", "The key that should save the screenshot");
 
     public override void Start()
     {
-        if (!System.Enum.TryParse(Key.Value.Length == 1 ? Key.Value.ToUpper() : Key.Value, out _key))
+        if (!System.Enum.TryParse(Key.Value, out KeyCode _))
         {
             ThrowError("GameCapture Error, the key is not valid.");
             return;
@@ -28,7 +26,7 @@ public class GameCapture : Extension
 
     public override void Update()
     {
-        if (Input.GetKeyDown((UnityEngine.KeyCode)_key) && !ChatBox.Instance.inputField.isFocused)
+        if (Input.GetKeyDown(System.Enum.Parse<UnityEngine.KeyCode>(Key.Value)) && !ChatBox.Instance.inputField.isFocused)
         {
             Camera? camera = Camera.main;
             int resWidth = Screen.width, resHeight = Screen.height;
