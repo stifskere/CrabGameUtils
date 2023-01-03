@@ -3,7 +3,16 @@ namespace CrabGameUtils;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BasePlugin
-{ 
+{
+    public delegate void PlayerActionDelegate(ulong id);
+    public static event PlayerActionDelegate RemovePlayerEvent = null!;
+    public static event PlayerActionDelegate RespawnPlayerEvent = null!;
+    public static event PlayerActionDelegate SpawnPlayerEvent = null!;
+
+    public delegate void ChatBoxActionDelegate(string text);
+
+    public static event ChatBoxActionDelegate ChatBoxSubmitEvent = null!;
+    
     public static SteamManager Steam { get; set; } = SteamManager.Instance;
     public static Plugin Instance { get; set; } = null!;
     public static ConfigFile StaticConfig { get; set; } = null!;
@@ -44,6 +53,24 @@ public class Plugin : BasePlugin
         Steam = SteamManager.Instance;
         foreach (Extension extension in ExtensionInstances) extension.Update();
     }
+
+    [HarmonyPatch(typeof(GameManager), "RemovePlayer"), HarmonyPostfix]
+    public static void RemovePlayer(GameManager __instance, ulong __0)
+        => RemovePlayerEvent?.Invoke(__0);
+    
+    [HarmonyPatch(typeof(GameManager), "SpawnPlayer"), HarmonyPostfix]
+    public static void RespawnPlayer(GameManager __instance, ulong __0)
+        => SpawnPlayerEvent?.Invoke(__0);
+    
+    [HarmonyPatch(typeof(GameManager), "RespawnPlayer"), HarmonyPostfix]
+    public static void SpawnPlayer(GameManager __instance, ulong __0)
+        => RespawnPlayerEvent?.Invoke(__0);
+
+    [HarmonyPatch(typeof(ChatBox), "SendMessage"), HarmonyPostfix]
+    public static void SendMessage(ChatBox __instance, string __0)
+    {
+        ChatBoxSubmitEvent?.Invoke(__0);
+    }
 }
 
 public class BepinexDetectionPatch {
@@ -59,5 +86,4 @@ public static class CustomMethods
 {
     public static uint RandomColor() => (uint)new Random().Next(0x0, 0xFFFFFF);
 }
-        
 

@@ -14,6 +14,7 @@ public class Glow : Extension
     private System.Collections.Generic.Dictionary<int, DefaultObjectColors> _defaultObjectColors = default!;
     private System.Collections.Generic.Dictionary<ulong, GameObject> _playerGameObjects = default!;
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+    private static readonly int Color1 = Shader.PropertyToID("_Color");
 
     public override void Start()
     {
@@ -28,19 +29,28 @@ public class Glow : Extension
         _sun = GameObject.Find("Directional Light");
         _defaultAmbient = RenderSettings.ambientLight;
 
-        foreach (MeshRenderer renderer in Object.FindObjectsOfType<MeshRenderer>())
-        {
-            _defaultObjectColors.Add(renderer.GetInstanceID(), new DefaultObjectColors
-            {
-                MaterialColor = renderer.material.color,
-                EmisionColor = renderer.material.GetColor(EmissionColor)
-            });
-        }
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+            foreach (Material rendererMaterial in renderer.materials)
+                _defaultObjectColors.Add(rendererMaterial.GetInstanceID(), new DefaultObjectColors
+                {
+                    MaterialColor = rendererMaterial.color,
+                    EmisionColor = rendererMaterial.GetColor(EmissionColor)
+                });
+            
 
         foreach (Light light in Object.FindObjectsOfType<Light>())
             _defaultObjectColors.Add(light.GetInstanceID(), new DefaultObjectColors{MaterialColor = light.color});
 
-        ChatBox.Instance.ForceMessage($"<color=#00FFFF>Party Loaded, press {Key.Value} to go on drugs.</color>");
+        if (_enabled)
+        {
+            _sun.active = !_enabled;
+            RenderSettings.ambientLight = _enabled ? new Color(0.07f, 0.07f, 0.07f) : _defaultAmbient;
+            foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+                foreach (Material rendererMaterial in renderer.materials)
+                    rendererMaterial.color = Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1);
+        }
+
+        ChatBox.Instance.ForceMessage($"<color=#00FFFF>Party Loaded, press {Key.Value} to go on drugs.</color><color=orange>{(GameManager.Instance.activePlayers.count > 15 ? "(fps warning)" : "")}</color>");
     }
 
     private Color RotateColor(Color color)
@@ -61,13 +71,15 @@ public class Glow : Extension
             }
         }
 
-        foreach (MeshRenderer renderer in Object.FindObjectsOfType<MeshRenderer>())
-        {
-            int id = renderer.GetInstanceID();
-            if (!_defaultObjectColors.ContainsKey(id)) continue;
-            if (renderer.material.color != _defaultObjectColors[id].MaterialColor) renderer.material.color = _defaultObjectColors[id].MaterialColor;
-            renderer.material.SetColor(EmissionColor, _defaultObjectColors[renderer.GetInstanceID()].EmisionColor!.Value);
-        }
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+            foreach (Material rendererMaterial in renderer.materials)
+            {
+                int id = rendererMaterial.GetInstanceID();
+                if (!_defaultObjectColors.ContainsKey(id)) continue;
+                if (rendererMaterial.color != _defaultObjectColors[id].MaterialColor) rendererMaterial.color = _defaultObjectColors[id].MaterialColor;
+                rendererMaterial.SetColor(EmissionColor, _defaultObjectColors[rendererMaterial.GetInstanceID()].EmisionColor!.Value);
+            }
+        
 
         foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
             if (light.color != _defaultObjectColors[light.GetInstanceID()].MaterialColor) light.color = _defaultObjectColors[light.GetInstanceID()].MaterialColor;
@@ -81,6 +93,12 @@ public class Glow : Extension
             _sun.active = !_enabled;
             RenderSettings.ambientLight = _enabled ? new Color(0.07f, 0.07f, 0.07f) : _defaultAmbient;
             if (!_enabled) Disable();
+            else
+            {
+                foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+                    foreach (Material rendererMaterial in renderer.materials)
+                        rendererMaterial.SetColor(Color1, Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1));
+            }
             ChatBox.Instance.ForceMessage($"<color=orange>Party mode:</color> {(_enabled ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}");
         }
         
@@ -96,9 +114,8 @@ public class Glow : Extension
                 _playerGameObjects.Add(player.Key, light);
             }
             else
-            {
                 light = _playerGameObjects[player.Key];
-            }
+            
             
             
             Light lightComp = light.GetComponent<Light>();
@@ -111,18 +128,20 @@ public class Glow : Extension
                 lightComp.range = 30;
                 lightComp.bounceIntensity = 1;
                 lightComp.color = Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1);
+                lightComp.renderMode = LightRenderMode.ForcePixel;
             }
             
             lightComp.color = RotateColor(lightComp.color);
             light.transform.position = player.Value.transform.position + new Vector3(0, 2, 0);
         }
 
-        foreach (MeshRenderer renderer in Object.FindObjectsOfType<MeshRenderer>())
-        {
-            Material material;
-            (material = renderer.material).color = RotateColor(renderer.material.color);
-            renderer.material.SetColor(EmissionColor, material.color);
-        }
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+            foreach (Material rendererMaterial in renderer.materials)
+            {
+                rendererMaterial.SetColor(Color1, RotateColor(rendererMaterial.color));
+                rendererMaterial.SetColor(EmissionColor, rendererMaterial.color);
+            }
+        
 
         foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
             light.color = RotateColor(light.color);
