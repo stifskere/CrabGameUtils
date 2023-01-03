@@ -25,7 +25,7 @@ public class Glow : Extension
         _playerGameObjects = new();
         if (!System.Enum.TryParse(Key.Value, out KeyCode _))
         {
-            ThrowError("Party errored, the keycode is not valid.");
+            ThrowError("Player glow errored, the keycode is not valid.");
             return;
         }
 
@@ -42,7 +42,13 @@ public class Glow : Extension
             Enable();
         }
 
-        ChatBox.Instance.ForceMessage($"<color=#00FFFF>Party Loaded, press {Key.Value} to go on drugs.</color><color=orange>{(GameManager.Instance.activePlayers.count > 15 ? "(fps warning)" : "")}</color>");
+        Events.RemovePlayerEvent += id =>
+        {
+            Object.Destroy(_playerGameObjects[id]);
+            _playerGameObjects.Remove(id);
+        };
+        
+        ChatBox.Instance.ForceMessage($"<color=#00FFFF>Player glow Loaded, press {Key.Value} to go on drugs.</color><color=orange>{(GameManager.Instance.activePlayers.count + GameManager.Instance.spectators.count > 15 ? "(fps warning)" : "")}</color>");
     }
 
     private Color RotateColor(Color color)
@@ -60,7 +66,7 @@ public class Glow : Extension
             RenderSettings.ambientLight = _enabled ? new Color(0.07f, 0.07f, 0.07f) : _defaultAmbient;
             if (!_enabled) Disable();
             else Enable();
-            ChatBox.Instance.ForceMessage($"<color=orange>Party mode:</color> {(_enabled ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}");
+            ChatBox.Instance.ForceMessage($"<color=orange>Player glow:</color> {(_enabled ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}");
         }
         
         if (!_enabled) return;

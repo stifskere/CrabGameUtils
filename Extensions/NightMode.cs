@@ -8,7 +8,7 @@ public class NightMode : Extension
 {
     public ExtensionConfig<string> Key = new("key", "N", "the key to enable or disable");
     
-    private bool _enabled = false;
+    private bool _enabled;
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
     private Color _skyboxColor;
     private static readonly int Color1 = Shader.PropertyToID("_Color");
@@ -23,6 +23,8 @@ public class NightMode : Extension
             return;
         }
         _skyboxColor = RenderSettings.skybox.color;
+        
+        ChatBox.Instance.ForceMessage($"<color=#00FFFF>Night mode Loaded, press {Key.Value}.</color><color=orange>");
     }
     
     public override void Update()

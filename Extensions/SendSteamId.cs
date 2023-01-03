@@ -9,7 +9,9 @@ public class SendSteamId : Extension
     public ExtensionConfig<string> URL = new("url", "Your webhook", "Where the embed will be sent");
     public ExtensionConfig<string> Key = new("key", "P", "What keybind should the plugin use to send the embed");
     public ExtensionConfig<Method> MessageMethod = new("method", Method.Keybind, "Should the plugin send the embed on round start or on keybind press?");
-    
+   
+    public new ExtensionConfig<bool> Enabled = new("toggle", false, "Whether to enable or disable the plugin");
+
     public override void Start()
     {
         _webhook = new DiscordWebhook(URL.Value, "SteamIdSender", debug: WebhookDebugMode.OnError);
