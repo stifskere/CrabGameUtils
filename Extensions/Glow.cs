@@ -1,6 +1,4 @@
-﻿
-using Color = UnityEngine.Color;
-using Console = System.Console;
+﻿using Color = UnityEngine.Color;
 using Object = UnityEngine.Object;
 
 namespace CrabGameUtils.Extensions;
@@ -47,11 +45,10 @@ public class Glow : Extension
         {
             _enabled = !_enabled;
             ChatBox.Instance.ForceMessage($"<color=orange>Party mode:</color> {(_enabled ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}");
+            _sun.active = !_enabled;
+            RenderSettings.ambientLight = _enabled ? Color.black : _defaultAmbient;
         }
-
-        _sun.active = !_enabled;
-        RenderSettings.ambientLight = _enabled ? Color.black : _defaultAmbient;
-
+        
         foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
         {
             GameObject light = GameObject.Find($"Light-{player.Key}");
@@ -69,7 +66,7 @@ public class Glow : Extension
             {
                 lightComp = light.AddComponent<Light>();
                 lightComp.type = LightType.Point;
-                lightComp.intensity = 5;
+                lightComp.intensity = 4;
                 lightComp.range = 30;
                 lightComp.bounceIntensity = 1;
                 lightComp.color = Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1);
