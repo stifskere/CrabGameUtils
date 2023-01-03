@@ -50,44 +50,7 @@ public class Glow : Extension
         Color.RGBToHSV(color, out float h, out _, out _);
         return Color.HSVToRGB(h + Time.deltaTime / 5 >= 1 ? 0 : h + Time.deltaTime / 5, 1, 1);
     }
-
-    private void Disable()
-    {
-        foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
-        {
-            GameObject light = GameObject.Find($"Light-{player.Key}");
-            if (light)
-            {
-                _playerGameObjects.Remove(player.Key);
-                Object.Destroy(light);
-            }
-        }
-
-        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
-        {
-            if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
-            renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
-        }
-        
-
-        foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
-            if (light.color != _lightColors[light.GetInstanceID()]) light.color = _lightColors[light.GetInstanceID()];
-    }
-
-    private void Enable()
-    {
-        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
-        {
-            if (_materials.ContainsKey(renderer.GetInstanceID())) continue;
-            System.Collections.Generic.List<Material> materials = renderer.materials.Select(material => new Material(material)).ToList();
-            _materials[renderer.GetInstanceID()] = materials;
-        }
-        
-        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
-            foreach (Material rendererMaterial in renderer.materials)
-                rendererMaterial.SetColor(Color1, Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1));
-    }
-
+    
     public override void Update()
     {
         if (Input.GetKeyDown(Key.Value.ToLower()) && !ChatBox.Instance.inputField.isFocused)
@@ -140,5 +103,42 @@ public class Glow : Extension
         
         foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
             light.color = RotateColor(light.color);
+    }
+    
+    private void Enable()
+    {
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+        {
+            if (_materials.ContainsKey(renderer.GetInstanceID())) continue;
+            System.Collections.Generic.List<Material> materials = renderer.materials.Select(material => new Material(material)).ToList();
+            _materials[renderer.GetInstanceID()] = materials;
+        }
+        
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+        foreach (Material rendererMaterial in renderer.materials)
+            rendererMaterial.SetColor(Color1, Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1));
+    }
+    
+    private void Disable()
+    {
+        foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
+        {
+            GameObject light = GameObject.Find($"Light-{player.Key}");
+            if (light)
+            {
+                _playerGameObjects.Remove(player.Key);
+                Object.Destroy(light);
+            }
+        }
+
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+        {
+            if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
+            renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
+        }
+        
+
+        foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
+            if (light.color != _lightColors[light.GetInstanceID()]) light.color = _lightColors[light.GetInstanceID()];
     }
 }
