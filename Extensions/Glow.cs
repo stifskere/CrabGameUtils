@@ -1,5 +1,4 @@
-﻿
-using Color = UnityEngine.Color;
+﻿using Color = UnityEngine.Color;
 using Object = UnityEngine.Object;
 
 namespace CrabGameUtils.Extensions;
@@ -16,9 +15,8 @@ public class Glow : Extension
 
     public override void Start()
     {
-         _defaultObjectColors = new();
         if (!Enabled.Value) return;
-        
+        _defaultObjectColors = new();
         if (!System.Enum.TryParse(Key.Value.ToUpper(), out KeyCode _))
         {
             ThrowError("Party errored, the keycode is not valid.");
@@ -47,11 +45,10 @@ public class Glow : Extension
         {
             _enabled = !_enabled;
             ChatBox.Instance.ForceMessage($"<color=orange>Party mode:</color> {(_enabled ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}");
+            _sun.active = !_enabled;
+            RenderSettings.ambientLight = _enabled ? Color.black : _defaultAmbient;
         }
-
-        _sun.active = !_enabled;
-        RenderSettings.ambientLight = _enabled ? Color.black : _defaultAmbient;
-
+        
         foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
         {
             GameObject light = GameObject.Find($"Light-{player.Key}");
@@ -69,7 +66,7 @@ public class Glow : Extension
             {
                 lightComp = light.AddComponent<Light>();
                 lightComp.type = LightType.Point;
-                lightComp.intensity = 5;
+                lightComp.intensity = 4;
                 lightComp.range = 30;
                 lightComp.bounceIntensity = 1;
                 lightComp.color = Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1);
@@ -80,7 +77,7 @@ public class Glow : Extension
             light.transform.position = player.Value.transform.position + new Vector3(0, 2, 0);
         }
 
-        foreach (GameObject gameObject in Object.FindObjectsOfType<GameObject>())
+        foreach (GameObject gameObject in Object.FindObjectsOfType<GameObject>().Where(a => a.name.Contains("Light-")))
         {
             MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
             if (!renderer) continue;
