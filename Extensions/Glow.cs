@@ -19,6 +19,7 @@ public class Glow : Extension
 
     public override void Start()
     {
+        _enabled = false;
         _materials = new();
         _lightColors = new();
         _playerGameObjects = new();
@@ -137,9 +138,7 @@ public class Glow : Extension
                 rendererMaterial.SetColor(EmissionColor, rendererMaterial.color);
             }
         
-
         foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
             light.color = RotateColor(light.color);
     }
-    
 }
