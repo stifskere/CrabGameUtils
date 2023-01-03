@@ -2,6 +2,7 @@
 
 namespace CrabGameUtils.Modules;
 
+[HarmonyPatchAll]
 public class Events
 {
     public delegate void PlayerActionDelegate(ulong id);
