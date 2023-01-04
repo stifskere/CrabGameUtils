@@ -9,6 +9,7 @@ public class Plugin : BasePlugin
     public static SteamManager Steam { get; set; } = SteamManager.Instance;
     public static Plugin Instance { get; set; } = null!;
     public static ConfigFile StaticConfig { get; set; } = null!;
+    public static Config Configuration { get; } = Modules.Config.Load($@"{Directory.GetCurrentDirectory()}\BepInEx\plugins\CrabGameUtilsData.json");
     
     public static SystemCollections.List<Extension> ExtensionInstances { get; } = new();
     
