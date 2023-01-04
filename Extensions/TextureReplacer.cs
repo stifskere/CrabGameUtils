@@ -22,6 +22,30 @@ public class TextureReplacer : Extension
             if (!Textures.ContainsKey(name.ToLower()))
                 Textures.Add(name.ToLower(), instance);
         }
+        
+        AddAutoCompletions();
+    }
+
+    private void AddAutoCompletions()
+    {
+        AutoComplete.AddCompletion("!textures");
+        AutoComplete.AddCompletion("!textures help");
+        for (int i = 1; i <= 2; i++)
+        {
+            AutoComplete.AddCompletion($"!textures help {i}");
+        }
+        AutoComplete.AddCompletion("!textures enable");
+        foreach (System.Collections.Generic.KeyValuePair<string, TextureReplacerTexture> texture in Textures!)
+        {
+            AutoComplete.AddCompletion($"!textures enable {texture.Key}");
+        }
+        AutoComplete.AddCompletion("!textures disable");
+        AutoComplete.AddCompletion("!textures setdefault");
+        foreach (System.Collections.Generic.KeyValuePair<string, TextureReplacerTexture> texture in Textures!)
+        {
+            AutoComplete.AddCompletion($"!textures setdefault {texture.Key}");
+        }
+        AutoComplete.AddCompletion("!textures cleardefault");
     }
     
     public override void Awake()
