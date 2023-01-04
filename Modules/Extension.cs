@@ -9,7 +9,7 @@ public abstract class Extension
     public abstract void Start();
     public abstract void Update();
     
-    protected void ThrowError(string message)
+    public void ThrowError(string message)
     {
         Enabled.Value = false;
         ChatBox.Instance.ForceMessage($"<color=red>{message}</color>");

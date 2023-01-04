@@ -23,14 +23,14 @@ public class Plugin : BasePlugin
         
         foreach (Type type in Assembly.GetAssembly(typeof(Extension)).GetTypes().Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(Extension))))
         {
-            string? name = type.GetCustomAttributesData().First(a => a.AttributeType.Name == "ExtensionNameAttribute").ConstructorArguments.First().Value?.ToString();
+            string name = type.GetCustomAttributesData().First(a => a.AttributeType.Name == "ExtensionNameAttribute").ConstructorArguments.First().Value?.ToString() ?? type.Name;
             Extension instance = (Extension)System.Activator.CreateInstance(type, null);
             foreach (FieldInfo field in type.GetFields().Where(p => p.FieldType.Name.Contains("ExtensionConfig")))
-                field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name ?? type.Name });
+                field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name });
             if (!instance.Enabled.Value) continue;
             ExtensionInstances.Add(instance);
-            instance.Name = name ?? type.Name;
-            Instance.Log.LogInfo($"{name ?? type.Name}: loaded successfully");
+            instance.Name = name;
+            Instance.Log.LogInfo($"{name}: loaded successfully");
         }
     }
     
@@ -47,13 +47,10 @@ public class Plugin : BasePlugin
         Steam = SteamManager.Instance;
         foreach (Extension extension in ExtensionInstances)
         {
-            try
-            {
-                extension.Start();
-            }
+            try { extension.Start(); }
             catch (Exception e)
             {
-                ChatBox.Instance.ForceMessage($"<color=red>Damn, {extension.Name} errored</color>");
+                extension.ThrowError($"{extension.Name} errored (see logs for more details)");
                 Instance.Log.LogError(e.ToString());
             }
         }
@@ -63,7 +60,15 @@ public class Plugin : BasePlugin
     public static void Update(GameUI __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances) extension.Update();
+        foreach (Extension extension in ExtensionInstances)
+        {
+            try { extension.Update(); }
+            catch (Exception e)
+            {
+                extension.ThrowError($"{extension.Name} errored (see logs for more details)");
+                Instance.Log.LogError(e.ToString());
+            }
+        }
     }
 }
 
