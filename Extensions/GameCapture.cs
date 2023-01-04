@@ -1,4 +1,6 @@
 ﻿
+using Object = UnityEngine.Object;
+
 namespace CrabGameUtils.Extensions;
 
 [ExtensionName("Game capture")]
@@ -6,6 +8,11 @@ public class GameCapture : Extension
 {
     public ExtensionConfig<string> Path = new("path", $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures)}", "Where to save the image");
     public ExtensionConfig<string> Key = new("key", "O", "The key that should save the screenshot");
+
+    public override void Awake()
+    {
+        
+    }
 
     public override void Start()
     {
@@ -28,20 +35,21 @@ public class GameCapture : Extension
     {
         if (Input.GetKeyDown(System.Enum.Parse<UnityEngine.KeyCode>(Key.Value)) && !ChatBox.Instance.inputField.isFocused)
         {
-            Camera? camera = Camera.main;
             int resWidth = Screen.width, resHeight = Screen.height;
+            Camera? camera = Camera.main;
             RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
-            camera!.targetTexture = rt;
             Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+            camera!.targetTexture = rt;
             camera.Render();
             RenderTexture.active = rt;
             screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
             camera.targetTexture = null;
             RenderTexture.active = null;
-            UnityEngine.Object.Destroy(rt);
+            Object.Destroy(rt);
             byte[] bytes = screenShot.EncodeToPNG();
             string curPath = System.IO.Path.Combine(Path.Value, $"{System.DateTime.Now:HHmmssyyyyMMdd}.png");
             File.WriteAllBytes(curPath, bytes);
+            Object.Destroy(screenShot);
             ChatBox.Instance.ForceMessage($"<color=#00FFFF>Screenshoot saved to:</color> <color=orange>\"{curPath}\"</color>");
         }
     }

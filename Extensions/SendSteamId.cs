@@ -12,6 +12,11 @@ public class SendSteamId : Extension
    
     public new ExtensionConfig<bool> Enabled = new("toggle", false, "Whether to enable or disable the plugin");
 
+    public override void Awake()
+    {
+        
+    }
+
     public override void Start()
     {
         _webhook = new DiscordWebhook(URL.Value, "SteamIdSender", debug: WebhookDebugMode.OnError);

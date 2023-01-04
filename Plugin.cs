@@ -30,6 +30,13 @@ public class Plugin : BasePlugin
             Instance.Log.LogInfo($"{name ?? type.Name}: loaded successfully");
         }
     }
+    
+    [HarmonyPatch(typeof(GameUI), "Awake"), HarmonyPostfix]
+    public static void Awake(GameUI __instance)
+    {
+        Steam = SteamManager.Instance;
+        foreach (Extension extension in ExtensionInstances) extension.Awake();
+    }
 
     [HarmonyPatch(typeof(GameUI), "Start"), HarmonyPostfix]
     public static void Start(GameUI __instance)

@@ -14,16 +14,19 @@ public class NightMode : Extension
     private static readonly int Color1 = Shader.PropertyToID("_Color");
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
+    public override void Awake()
+    {
+        if (!System.Enum.TryParse(Key.Value, out KeyCode _))
+        {
+            ThrowError("Night mode errored, the keycode is not valid.");
+        }
+    }
+
     public override void Start()
     {
         _materials = new();
-        if (!System.Enum.TryParse(Key.Value, out KeyCode _))
-        {
-            ThrowError("Party errored, the keycode is not valid.");
-            return;
-        }
         _skyboxColor = RenderSettings.skybox.color;
-        
+
         ChatBox.Instance.ForceMessage($"<color=#00FFFF>Night mode Loaded, press {Key.Value}.</color><color=orange>");
     }
     
@@ -37,6 +40,7 @@ public class NightMode : Extension
                 foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
                 {
                     if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
+                    foreach (Material material in renderer.materials) Object.Destroy(material);
                     renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
                 }
                 RenderSettings.skybox.color = _skyboxColor;

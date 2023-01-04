@@ -17,12 +17,18 @@ public class Glow : Extension
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     private static readonly int Color1 = Shader.PropertyToID("_Color");
 
+    public override void Awake()
+    {
+        
+    }
+
     public override void Start()
     {
         _enabled = false;
         _materials = new();
         _lightColors = new();
         _playerGameObjects = new();
+        
         if (!System.Enum.TryParse(Key.Value, out KeyCode _))
         {
             ThrowError("Player glow errored, the keycode is not valid.");
@@ -44,13 +50,18 @@ public class Glow : Extension
 
         void OnEventsOnRemovePlayerEvent(ulong id)
         {
-            GameObject light = GameObject.Find($"Light-{id}");
-            if (light) Object.Destroy(light);
-            if (_playerGameObjects.ContainsKey(id)) _playerGameObjects.Remove(id);
+            if (!_playerGameObjects.ContainsKey(id)) return;
+            Object.Destroy(_playerGameObjects[id]);
+            _playerGameObjects.Remove(id);
         }
 
         Events.RemovePlayerEvent += OnEventsOnRemovePlayerEvent;
-        Events.PlayerDiedEvent += (_, id, _) => OnEventsOnRemovePlayerEvent(id);
+        Events.PlayerDiedEvent += (player, killer, idk) =>
+        {
+            if (!_playerGameObjects.ContainsKey(player)) return;
+            Object.Destroy(_playerGameObjects[player]);
+            _playerGameObjects.Remove(player);
+        };
         
         ChatBox.Instance.ForceMessage($"<color=#00FFFF>Player glow Loaded, press {Key.Value} to go on drugs.</color><color=orange>{(GameManager.Instance.activePlayers.count + GameManager.Instance.spectators.count > 15 ? "(fps warning)" : "")}</color>");
     }
@@ -76,6 +87,7 @@ public class Glow : Extension
         
         foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
         {
+            if (player.Value.dead) continue;
             GameObject light;
             
             if (!_playerGameObjects.ContainsKey(player.Key))
@@ -151,8 +163,8 @@ public class Glow : Extension
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         {
             if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
+            foreach (Material material in renderer.materials) Object.Destroy(material);
             renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
-            foreach (Material material in _materials[renderer.GetInstanceID()]) Object.Destroy(material);
         }
         
 
