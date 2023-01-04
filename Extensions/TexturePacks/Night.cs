@@ -20,19 +20,30 @@ public class Night : TextureReplacerTexture
             }
         }
         _materials = new();
+
+        Events.SpawnPlayerEvent += id =>
+        {
+            if (!Enabled) return;
+            foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+            {
+                if (!_materials.ContainsKey(renderer.GetInstanceID()))
+                    _materials[renderer.GetInstanceID()] =
+                        renderer.materials.Select(material => new Material(material)).ToList();
+                foreach (Material rendererMaterial in renderer.materials)
+                {
+                    int[] textures = rendererMaterial.GetTexturePropertyNameIDs();
+                    foreach (int texture in textures)
+                    {
+                        rendererMaterial.SetTexture(texture, null);
+                    }
+                }
+            }
+        };
     }
 
     public override void Update()
     {
-        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
-        {
-            if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
-            foreach (Material rendererMaterial in renderer.materials)
-            {
-                rendererMaterial.SetColor(Color1, Color.black);
-                rendererMaterial.SetColor(EmissionColor, Color.black);
-            }
-        }
+        
     }
 
     public override void Enable()
@@ -44,6 +55,16 @@ public class Night : TextureReplacerTexture
         light.range = 50;
         light.spotAngle = 90;
         RenderSettings.sun.color = Color.black;
+        
+        foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
+        {
+            if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
+            foreach (Material rendererMaterial in renderer.materials)
+            {
+                rendererMaterial.SetColor(Color1, Color.black);
+                rendererMaterial.SetColor(EmissionColor, Color.black);
+            }
+        }
     }
 
     public override void Disable()
