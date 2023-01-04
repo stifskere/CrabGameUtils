@@ -13,9 +13,17 @@ public class Events
     public delegate void ChatBoxActionDelegate(string text);
     public static event ChatBoxActionDelegate ChatBoxSubmitEvent = null!;
 
+    public delegate void PlayerDiedDelegate(ulong victim, ulong killer, Vector3 position);
+
+    public static event PlayerDiedDelegate PlayerDiedEvent = null!;
+
     [HarmonyPatch(typeof(GameManager), "RemovePlayer"), HarmonyPostfix]
     public static void RemovePlayer(GameManager __instance, ulong __0)
         => RemovePlayerEvent?.Invoke(__0);
+
+    [HarmonyPatch(typeof(GameManager), "PlayerDied"), HarmonyPostfix]
+    public static void PlayerDied(GameManager __instance, ulong __0, ulong __1, Vector3 __2)
+        => PlayerDiedEvent?.Invoke(__0, __1, __2);
     
     [HarmonyPatch(typeof(GameManager), "SpawnPlayer"), HarmonyPostfix]
     public static void RespawnPlayer(GameManager __instance, ulong __0)

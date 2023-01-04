@@ -42,13 +42,15 @@ public class Glow : Extension
             Enable();
         }
 
-        Events.RemovePlayerEvent += id =>
+        void OnEventsOnRemovePlayerEvent(ulong id)
         {
-            Debug.Log(id.ToString());
             GameObject light = GameObject.Find($"Light-{id}");
             if (light) Object.Destroy(light);
             if (_playerGameObjects.ContainsKey(id)) _playerGameObjects.Remove(id);
-        };
+        }
+
+        Events.RemovePlayerEvent += OnEventsOnRemovePlayerEvent;
+        Events.PlayerDiedEvent += (_, id, _) => OnEventsOnRemovePlayerEvent(id);
         
         ChatBox.Instance.ForceMessage($"<color=#00FFFF>Player glow Loaded, press {Key.Value} to go on drugs.</color><color=orange>{(GameManager.Instance.activePlayers.count + GameManager.Instance.spectators.count > 15 ? "(fps warning)" : "")}</color>");
     }
