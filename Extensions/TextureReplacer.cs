@@ -6,9 +6,12 @@ namespace CrabGameUtils.Extensions;
 [ExtensionName("Texture replacer")]
 public class TextureReplacer : Extension
 {
+    public ExtensionConfig<string> Prefix = new("prefix", "!", "the prefix for commands related with this extension");
+
     protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture>? Textures;
     protected static TextureReplacerTexture? Current;
-
+    protected static TextureReplacerTexture? Default;
+    
     public TextureReplacer()
     {
         Events.ChatBoxSubmitEvent += GetChatMessageLocal;
@@ -55,14 +58,22 @@ public class TextureReplacer : Extension
 
     public override void Start()
     {
+        if (Configuration.DefaultName != null && Textures!.ContainsKey(Configuration.DefaultName)) Default = Textures[Configuration.DefaultName];
+        
         if (Current != null) 
         {
             Disable(Current);
             Current = null;
         }
 
+        if (Default != null)
+        {
+            Current = Default;
+            Enable(Current);
+        }
+        
         foreach (TextureReplacerTexture texture in Textures!.Values) texture.Start();
-        ChatBox.Instance.ForceMessage("<color=#00FFFF>Texture replacer loaded, type \"!textures help\" for help.</color>");
+        ChatBox.Instance.ForceMessage($"<color=#00FFFF>Texture replacer loaded, type \"{Prefix.Value}textures help\" for help.</color>");
     }
     
     public override void Update()
@@ -70,7 +81,7 @@ public class TextureReplacer : Extension
         Current?.Update();
     }
 
-    public static void ProcessCommand(string[] args)
+    public void ProcessCommand(string[] args)
     {
         if (args.Length < 1)
         {
@@ -91,7 +102,7 @@ public class TextureReplacer : Extension
                         ChatBox.Instance.ForceMessage("<color=red>Can't</color>");
                         return;
                     }
-                    SetCurrent(Textures!.Values.ElementAt(UnityEngine.Random.Range(0, Textures.Count)));
+                    SetCurrent(Textures.Values.ElementAt(UnityEngine.Random.Range(0, Textures.Count)));
                     return;
                 }
                 
@@ -116,7 +127,64 @@ public class TextureReplacer : Extension
             }
                 break;
             case "help":
-                ChatBox.Instance.ForceMessage("<color=#00FFFF>--- Textures help ---</color>\n<color=green>!textures - Without arguments it will show you a list of available textures\n!textures enable name - Will enable \"name\" texture and disable current if there is.\n!textures disable - Will disable active texture if there is</color>.\n<color=#00FFFF>--- end ---</color>");
+                string[] pages =
+                {
+                    "!textures - Without arguments it will show you a list of available textures\n!textures enable name - Will enable \"name\" texture and disable current if there is.\n!textures disable - Will disable active texture if there is.".Replace("!", Prefix.Value),
+                    "!textures setdefault texture - Will set the default texture to defined texture and when you start the game it will automatically enable\n!textures cleardefault - Will remove the default and disable it.".Replace("!", Prefix.Value)
+                };
+                int page;
+                if (args.Length < 2)
+                {
+                    page = 1;
+                }
+                else if (!int.TryParse(args[1], out page) || page < 1 || page > pages.Length)
+                {
+                    ChatBox.Instance.ForceMessage("<color=yellow>not a valid page number.</color>");
+                    return;
+                }
+
+                ChatBox.Instance.ForceMessage($"<color=#00FFFF>--- Textures help (page {page} out of {pages.Length}) ---</color>\n<color=green>{pages[page - 1]}</color>\n<color=#00FFFF>--- end ---</color>");
+                break;
+            case "setdefault":
+            {
+                string textureName = String.Join(" ", args[1..]).ToLower();
+
+                if (!string.IsNullOrEmpty(textureName) && Current != null)
+                {
+                    Default = Current;
+                    ChatBox.Instance.ForceMessage("<color=green>Default texture set to current.</color>");
+                }
+                else if (Textures!.ContainsKey(textureName))
+                {
+                    Default = Textures[textureName]!;
+                    ChatBox.Instance.ForceMessage($"<color=green>Default texture set to {textureName}</color>");
+                }
+                else
+                {
+                    ChatBox.Instance.ForceMessage("<color=yellow>No texture to set, use a third argument to set a texture</color>");
+                    return;
+                }
+
+                if (Current != null)
+                    Disable(Current);
+                
+                Current = Default;
+                Enable(Current);
+
+                Configuration.DefaultName = textureName;
+                Configuration.Save();
+            }
+                break;
+            case "cleardefault":
+                if (Default != null)
+                {
+                    RemoveCurrent();
+                    Default = null;
+                    ChatBox.Instance.ForceMessage("<color=green>Cleared default.</color>");
+                    return;
+                }
+                
+                ChatBox.Instance.ForceMessage("<color=yellow>Nothing to clear.</color>");
                 break;
             default:
                 ChatBox.Instance.ForceMessage($"<color=yellow>Could not find function {args[0]}</color>");
@@ -149,18 +217,17 @@ public class TextureReplacer : Extension
         texture.Disable();
     }
 
-    public static void GetChatMessageLocal(string text)
+    public void GetChatMessageLocal(string text)
     {
         string[] args = text.Split(" ");
 
-        if (args[0].ToLower() != "!textures") return;
+        if (args[0].ToLower() != $"{Prefix.Value}textures") return;
         ProcessCommand(args[1..]);
     }
 }
 
 public abstract class TextureReplacerTexture
 {
-
     public bool Enabled;
     
     public abstract void Start();
