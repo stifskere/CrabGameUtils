@@ -6,25 +6,39 @@ namespace CrabGameUtils.Extensions;
 [ExtensionName("Texture replacer")]
 public class TextureReplacer : Extension
 {
-    protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture> Textures = null!;
+    protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture>? Textures;
     protected static TextureReplacerTexture? Current;
 
+    public TextureReplacer()
+    {
+        Events.ChatBoxSubmitEvent += GetChatMessageLocal;
+    }
+    
     public override void Awake()
     {
-        Textures = new();
-        Events.ChatBoxSubmitEvent += GetChatMessageLocal;
+        
+    }
+
+    public override void Start()
+    {
+        Textures ??= new();
 
         foreach (Type texture in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(TextureReplacerTexture))))
         {
             string name = texture.GetCustomAttributesData().First(a => a.AttributeType.Name == "TextureNameAttribute").ConstructorArguments.First().Value?.ToString() ?? texture.Name;
             TextureReplacerTexture instance = (TextureReplacerTexture)System.Activator.CreateInstance(texture, null);
-            Textures.Add(name.ToLower(), instance);
+            if (!Textures.ContainsKey(name.ToLower()))
+                Textures.Add(name.ToLower(), instance);
         }
-    }
+        
+        if (Current != null)
+        {
+            Current.Enabled = false;
+            Current.Disable();
+            Current = null;
+        }
 
-    public override void Start()
-    {
-        foreach (TextureReplacerTexture texture in Textures.Values) texture.Start(); 
+        foreach (TextureReplacerTexture texture in Textures.Values) texture.Start();
         ChatBox.Instance.ForceMessage("<color=#00FFFF>Texture replacer loaded, type \"!textures help\" for help.</color>");
     }
     
@@ -41,7 +55,7 @@ public class TextureReplacer : Extension
 
         if (args.Length <= 1)
         {
-            ChatBox.Instance.ForceMessage(Textures.Keys.Aggregate("<color=#00FFFF>--- Textures list ---</color>", (s, s1) => $"{s}\n<color=green>- {s1}</color>"));
+            ChatBox.Instance.ForceMessage(Textures!.Keys.Aggregate("<color=#00FFFF>--- Textures list ---</color>", (s, s1) => $"{s}\n<color=green>- {s1}</color>"));
             return;
         }
         
@@ -50,7 +64,7 @@ public class TextureReplacer : Extension
             case "enable":
             {
                 string textureName = String.Join(" ", args[2..]).ToLower();
-                if (!Textures.ContainsKey(textureName))
+                if (!Textures!.ContainsKey(textureName))
                 {
                     ChatBox.Instance.ForceMessage($"<color=red>Couldn't find any texture with \"{textureName}\"</color>");
                     return;

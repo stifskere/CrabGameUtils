@@ -14,7 +14,6 @@ public class Rainbow : TextureReplacerTexture
     
     public override void Start()
     {
-        Debug.Log("Start");
         if (_materials != default!)
         {
             foreach (Material material in _materials.SelectMany(keyValuePair => keyValuePair.Value))
@@ -59,7 +58,6 @@ public class Rainbow : TextureReplacerTexture
             {
                 light = new GameObject($"Light-{player.Key}");
                 _playerGameObjects.Add(player.Key, light);
-                Instance.Log.LogInfo($"Player {player.value.username} added with id: {player.Key}");
             }
             else light = _playerGameObjects[player.Key];
 
@@ -136,7 +134,10 @@ public class Rainbow : TextureReplacerTexture
         
 
         foreach (Light light in Object.FindObjectsOfType<Light>().Where(i => !i.name.StartsWith("Light-")))
+        {
+            if (!_lightColors.ContainsKey(light.GetInstanceID())) continue;
             if (light.color != _lightColors[light.GetInstanceID()]) light.color = _lightColors[light.GetInstanceID()];
+        }
         
         RenderSettings.ambientLight = _ambientLight;
     }

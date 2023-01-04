@@ -55,8 +55,13 @@ public class Night : TextureReplacerTexture
             foreach (Material material in renderer.materials) Object.Destroy(material);
             renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
         }
-                
-        Light light = Camera.main!.GetComponent<Light>();
-        Object.Destroy(light);
+
+        Camera? main = Camera.main;
+        if (main != null)
+        {
+            Light light = main.GetComponent<Light>();
+            if (light)
+                Object.Destroy(light);
+        }
     }
 }

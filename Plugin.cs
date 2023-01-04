@@ -38,7 +38,15 @@ public class Plugin : BasePlugin
     public static void Awake(GameUI __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances) extension.Awake();
+        foreach (Extension extension in ExtensionInstances)
+        {
+            try { extension.Awake(); }
+            catch (Exception e)
+            {
+                ChatBox.Instance.ForceMessage($"<color=red>{extension.Name} errored (see logs for more details)</color>");
+                Instance.Log.LogError(e.ToString());
+            }
+        }
     }
 
     [HarmonyPatch(typeof(GameUI), "Start"), HarmonyPostfix]
