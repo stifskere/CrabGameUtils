@@ -4,7 +4,7 @@ using Color = UnityEngine.Color;
 namespace CrabGameUtils.Extensions.TexturePacks;
 
 [TextureName("night")]
-public class Black : TextureReplacerTexture
+public class Night : TextureReplacerTexture
 {
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
     private static readonly int Color1 = Shader.PropertyToID("_Color");

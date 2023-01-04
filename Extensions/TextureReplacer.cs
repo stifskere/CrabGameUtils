@@ -6,11 +6,12 @@ namespace CrabGameUtils.Extensions;
 [ExtensionName("Texture replacer")]
 public class TextureReplacer : Extension
 {
-    protected static readonly System.Collections.Generic.Dictionary<string, TextureReplacerTexture> Textures = new();
+    protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture> Textures;
     protected static TextureReplacerTexture? Current;
 
-    public TextureReplacer()
+    public override void Awake()
     {
+        Textures = new();
         Events.ChatBoxSubmitEvent += GetChatMessageLocal;
 
         foreach (Type texture in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(TextureReplacerTexture))))
@@ -20,13 +21,16 @@ public class TextureReplacer : Extension
             Textures.Add(name.ToLower(), instance);
         }
     }
-    
-    public override void Awake() { }
 
     public override void Start()
     {
-        foreach (TextureReplacerTexture texture in Textures.Values) texture.Start();
+        foreach (TextureReplacerTexture texture in Textures.Values) texture.Start(); 
         ChatBox.Instance.ForceMessage("<color=#00FFFF>Texture replacer loaded, type \"!textures help\" for help.</color>");
+    }
+    
+    public override void Update()
+    {
+        Current?.Update();
     }
 
     public static void GetChatMessageLocal(string text)
@@ -51,8 +55,12 @@ public class TextureReplacer : Extension
                     ChatBox.Instance.ForceMessage($"<color=red>Couldn't find any texture with \"{textureName}\"</color>");
                     return;
                 }
-                
-                if (Current != null) Current.Enabled = false;
+
+                if (Current != null)
+                {
+                    Current.Enabled = false; 
+                    Current.Disable();
+                }
                 Current = Textures[textureName];
                 Current.Enabled = true;
                 Current.Enable();
@@ -77,11 +85,6 @@ public class TextureReplacer : Extension
                 ChatBox.Instance.ForceMessage("<color=#00FFFF>--- Textures help ---</color>\n<color=green>!textures - Without arguments it will show you a list of available textures\n!textures enable name - Will enable \"name\" texture and disable current if there is.\n!textures disable - Will disable active texture if there is</color>.\n<color=#00FFFF>--- end ---</color>");
                 break;
         }
-    }
-
-    public override void Update()
-    {
-        foreach (TextureReplacerTexture texture in Textures.Values.Where(texture => texture.Enabled)) texture.Update();
     }
 }
 

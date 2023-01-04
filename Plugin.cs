@@ -50,7 +50,7 @@ public class Plugin : BasePlugin
             try { extension.Start(); }
             catch (Exception e)
             {
-                extension.ThrowError($"{extension.Name} errored (see logs for more details)");
+                ChatBox.Instance.ForceMessage($"<color=red>{extension.Name} errored (see logs for more details)</color>");
                 Instance.Log.LogError(e.ToString());
             }
         }
@@ -65,7 +65,7 @@ public class Plugin : BasePlugin
             try { extension.Update(); }
             catch (Exception e)
             {
-                extension.ThrowError($"{extension.Name} errored (see logs for more details)");
+                ChatBox.Instance.ForceMessage($"<color=red>{extension.Name} errored (see logs for more details)</color>");
                 Instance.Log.LogError(e.ToString());
             }
         }
