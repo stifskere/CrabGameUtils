@@ -59,4 +59,8 @@
     <ItemGroup>
       <None Remove="release\**" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions\TexturePacks" />
+    </ItemGroup>
 </Project>

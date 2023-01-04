@@ -2,7 +2,7 @@
 
 namespace CrabGameUtils.Modules;
 
-[HarmonyPatchAll]
+[HarmonyPatch]
 public class Events
 {
     public delegate void PlayerActionDelegate(ulong id);
@@ -28,5 +28,5 @@ public class Events
     [HarmonyPatch(typeof(ChatBox), "SendMessage"), HarmonyPostfix]
     public static void SendMessage(ChatBox __instance, string __0)
         => ChatBoxSubmitEvent?.Invoke(__0);
-    
+
 }

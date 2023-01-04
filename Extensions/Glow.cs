@@ -44,8 +44,10 @@ public class Glow : Extension
 
         Events.RemovePlayerEvent += id =>
         {
-            Object.Destroy(_playerGameObjects[id]);
-            _playerGameObjects.Remove(id);
+            Debug.Log(id.ToString());
+            GameObject light = GameObject.Find($"Light-{id}");
+            if (light) Object.Destroy(light);
+            if (_playerGameObjects.ContainsKey(id)) _playerGameObjects.Remove(id);
         };
         
         ChatBox.Instance.ForceMessage($"<color=#00FFFF>Player glow Loaded, press {Key.Value} to go on drugs.</color><color=orange>{(GameManager.Instance.activePlayers.count + GameManager.Instance.spectators.count > 15 ? "(fps warning)" : "")}</color>");
@@ -66,7 +68,6 @@ public class Glow : Extension
             RenderSettings.ambientLight = _enabled ? new Color(0.07f, 0.07f, 0.07f) : _defaultAmbient;
             if (!_enabled) Disable();
             else Enable();
-            ChatBox.Instance.ForceMessage($"<color=orange>Player glow:</color> {(_enabled ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}");
         }
         
         if (!_enabled) return;
@@ -79,10 +80,10 @@ public class Glow : Extension
             {
                 light = new GameObject($"Light-{player.Key}");
                 _playerGameObjects.Add(player.Key, light);
+                Instance.Log.LogInfo($"Player {player.value.username} added with id: {player.Key}");
             }
-            else
-                light = _playerGameObjects[player.Key];
-            
+            else light = _playerGameObjects[player.Key];
+
             Light lightComp = light.GetComponent<Light>();
 
             if (!lightComp)
@@ -98,6 +99,12 @@ public class Glow : Extension
             
             lightComp.color = RotateColor(lightComp.color);
             light.transform.position = player.Value.transform.position + new Vector3(0, 2, 0);
+        }
+
+        foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.spectators)
+        {
+            GameObject light = GameObject.Find($"Light-{player.key}");
+            if (light) Object.Destroy(light);
         }
 
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
@@ -143,6 +150,7 @@ public class Glow : Extension
         {
             if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
             renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
+            foreach (Material material in _materials[renderer.GetInstanceID()]) Object.Destroy(material);
         }
         
 
