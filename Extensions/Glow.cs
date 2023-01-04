@@ -25,7 +25,7 @@ public class Glow : Extension
     public override void Start()
     {
         _enabled = false;
-        if (true)
+        if (_materials != default!)
         {
             foreach (Material material in _materials.SelectMany(keyValuePair => keyValuePair.Value))
             {
