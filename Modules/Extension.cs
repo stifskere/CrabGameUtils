@@ -3,6 +3,7 @@ namespace CrabGameUtils.Modules;
 
 public abstract class Extension
 {
+    public string Name = default!;
     public ExtensionConfig<bool> Enabled = new("toggle", true, "Whether to enable or disable the plugin");
     public abstract void Awake();
     public abstract void Start();

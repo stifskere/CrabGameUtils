@@ -25,6 +25,14 @@ public class Glow : Extension
     public override void Start()
     {
         _enabled = false;
+        if (true)
+        {
+            foreach (Material material in _materials.SelectMany(keyValuePair => keyValuePair.Value))
+            {
+                Object.Destroy(material);
+            }
+        }
+
         _materials = new();
         _lightColors = new();
         _playerGameObjects = new();

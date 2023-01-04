@@ -1,4 +1,6 @@
 ﻿
+using Exception = System.Exception;
+
 namespace CrabGameUtils;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
@@ -27,6 +29,7 @@ public class Plugin : BasePlugin
                 field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name ?? type.Name });
             if (!instance.Enabled.Value) continue;
             ExtensionInstances.Add(instance);
+            instance.Name = name ?? type.Name;
             Instance.Log.LogInfo($"{name ?? type.Name}: loaded successfully");
         }
     }
@@ -42,7 +45,18 @@ public class Plugin : BasePlugin
     public static void Start(GameUI __instance)
     {
         Steam = SteamManager.Instance;
-        foreach (Extension extension in ExtensionInstances) extension.Start();
+        foreach (Extension extension in ExtensionInstances)
+        {
+            try
+            {
+                extension.Start();
+            }
+            catch (Exception e)
+            {
+                ChatBox.Instance.ForceMessage($"<color=red>Damn, {extension.Name} errored</color>");
+                Instance.Log.LogError(e.ToString());
+            }
+        }
     }
 
     [HarmonyPatch(typeof(GameUI), "Update"), HarmonyPostfix]
