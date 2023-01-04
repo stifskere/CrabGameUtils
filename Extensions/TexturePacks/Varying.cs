@@ -7,6 +7,7 @@ namespace CrabGameUtils.Extensions.TexturePacks;
 public class Varying : TextureReplacerTexture
 {
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
+    private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
     public override void Start()
     {
@@ -34,6 +35,7 @@ public class Varying : TextureReplacerTexture
             foreach (Material rendererMaterial in renderer.materials)
             {
                 rendererMaterial.color = UnityEngine.Random.ColorHSV(0f,1f,0f,1f,0.3f,1f);
+                rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(0f,1f,0f,1f,0.3f,1f));
             }
         }
     }

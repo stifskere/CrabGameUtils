@@ -9,6 +9,7 @@ public class Night : TextureReplacerTexture
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
     private static readonly int Color1 = Shader.PropertyToID("_Color");
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+    private Color _ambientColor = default!;
     
     public override void Start()
     {
@@ -20,25 +21,6 @@ public class Night : TextureReplacerTexture
             }
         }
         _materials = new();
-
-        Events.SpawnPlayerEvent += id =>
-        {
-            if (!Enabled) return;
-            foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
-            {
-                if (!_materials.ContainsKey(renderer.GetInstanceID()))
-                    _materials[renderer.GetInstanceID()] =
-                        renderer.materials.Select(material => new Material(material)).ToList();
-                foreach (Material rendererMaterial in renderer.materials)
-                {
-                    int[] textures = rendererMaterial.GetTexturePropertyNameIDs();
-                    foreach (int texture in textures)
-                    {
-                        rendererMaterial.SetTexture(texture, null);
-                    }
-                }
-            }
-        };
     }
 
     public override void Update()
@@ -49,19 +31,20 @@ public class Night : TextureReplacerTexture
     public override void Enable()
     {
         Light light = Camera.main!.gameObject.AddComponent<Light>();
-        light.renderMode = LightRenderMode.ForcePixel;
         light.type = LightType.Spot;
-        light.intensity = 10;
-        light.range = 50;
+        light.renderMode = LightRenderMode.ForcePixel;
+        light.intensity = 5;
+        light.range = 30;
         light.spotAngle = 90;
+        _ambientColor = RenderSettings.ambientLight;
         RenderSettings.sun.color = Color.black;
+        RenderSettings.ambientLight = Color.black;
         
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         {
             if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
             foreach (Material rendererMaterial in renderer.materials)
             {
-                rendererMaterial.SetColor(Color1, Color.black);
                 rendererMaterial.SetColor(EmissionColor, Color.black);
             }
         }
@@ -70,6 +53,7 @@ public class Night : TextureReplacerTexture
     public override void Disable()
     {
         RenderSettings.sun.color = Color.white;
+        RenderSettings.ambientLight = _ambientColor;
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         {
             if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
