@@ -6,7 +6,7 @@ namespace CrabGameUtils.Extensions;
 [ExtensionName("Texture replacer")]
 public class TextureReplacer : Extension
 {
-    protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture> Textures;
+    protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture> Textures = null!;
     protected static TextureReplacerTexture? Current;
 
     public override void Awake()
@@ -90,8 +90,8 @@ public class TextureReplacer : Extension
 
 public abstract class TextureReplacerTexture
 {
-    
-    public bool Enabled { get; set; }
+
+    public bool Enabled;
     
     public abstract void Start();
     public abstract void Update();
@@ -102,5 +102,6 @@ public abstract class TextureReplacerTexture
 [System.AttributeUsage(AttributeTargets.Class)]
 public class TextureNameAttribute : System.Attribute
 {
+    // ReSharper disable once UnusedParameter.Local
     public TextureNameAttribute(string name) {}
 }
