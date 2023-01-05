@@ -16,6 +16,15 @@ public class TextureReplacer : Extension
     {
         Events.ChatBoxSubmitEvent += GetChatMessageLocal;
         Textures = new();
+        
+        foreach (Type texture in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(TextureReplacerTexture))))
+        {
+            string name = texture.GetCustomAttributesData().First(a => a.AttributeType.Name == "TextureNameAttribute").ConstructorArguments.First().Value?.ToString() ?? texture.Name;
+            TextureReplacerTexture instance = (TextureReplacerTexture)System.Activator.CreateInstance(texture, null);
+            if (!Textures!.ContainsKey(name.ToLower()))
+                Textures.Add(name.ToLower(), instance);
+        }
+        
         AddAutoCompletions();
     }
 
@@ -43,14 +52,6 @@ public class TextureReplacer : Extension
     
     public override void Awake()
     {
-        foreach (Type texture in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(TextureReplacerTexture))))
-        {
-            string name = texture.GetCustomAttributesData().First(a => a.AttributeType.Name == "TextureNameAttribute").ConstructorArguments.First().Value?.ToString() ?? texture.Name;
-            TextureReplacerTexture instance = (TextureReplacerTexture)System.Activator.CreateInstance(texture, null);
-            if (!Textures!.ContainsKey(name.ToLower()))
-                Textures.Add(name.ToLower(), instance);
-        }
-        
         string? defaultName = Configuration.GlobalTemplate.TextureReplacer!.DefaultName;
         if (defaultName != null && Textures!.ContainsKey(defaultName)) Default = Textures[defaultName];
     }
