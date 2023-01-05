@@ -49,6 +49,11 @@ public class TextureReplacer : Extension
         }
         AutoComplete.AddCompletion("!textures cleardefault");
     }
+
+    private void RemoveAutoCompletions()
+    {
+        AutoComplete.SetCompletions(AutoComplete.GetCompletions().Where(n => !n.StartsWith("!textures")).ToList());
+    }
     
     public override void Awake()
     {
@@ -58,25 +63,20 @@ public class TextureReplacer : Extension
 
     public override void Start()
     {
-        if (Current != null) 
-        {
-            Disable(Current);
-            Current = null;
-        }
-
-        if (Default != null)
-        {
-            Current = Default;
-            Enable(Current);
-        }
-        
         foreach (TextureReplacerTexture texture in Textures!.Values) texture.Start();
+        
+        if (Current != null) RemoveCurrent();
+        if (Default != null) SetCurrent(Default);
+
         ChatBox.Instance.ForceMessage($"<color=#00FFFF>Texture replacer loaded, type \"{Prefix.Value}textures help\" for help.</color>");
     }
     
     public override void Update()
     {
-        try { Current?.Update(); } catch { /**/ }
+        try
+        {
+            Current?.Update();
+        } catch { /**/ }
     }
 
     public void ProcessCommand(string[] args)
@@ -169,8 +169,8 @@ public class TextureReplacer : Extension
                 Current = Default;
                 Enable(Current);
 
-                // Configuration.GlobalTemplate.TextureReplacer!.DefaultName = textureName;
-                // Configuration.Write();
+                Configuration.GlobalTemplate.TextureReplacer!.DefaultName = textureName;
+                Configuration.Write();
                 
                 ChatBox.Instance.ForceMessage("<color=yellow>(Beta feature) enabled only for this game instance, this warning and the limitation will disapear in the next version.</color>");
             }
@@ -201,7 +201,8 @@ public class TextureReplacer : Extension
     
     public static void RemoveCurrent()
     {
-        Disable(Current!);
+        if (Current == null) return;
+        Disable(Current);
         Current = null;
     }
 

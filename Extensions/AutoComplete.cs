@@ -7,7 +7,7 @@ namespace CrabGameUtils.Extensions;
 [ExtensionName("autocomplete")]
 public class AutoComplete : Extension
 {
-    private static List<string> _completions = new();
+    private static System.Collections.Generic.List<string> _completions = new();
     private int _index;
     private string? _lastCompletion;
     private int _lastStringPosition;
@@ -17,12 +17,12 @@ public class AutoComplete : Extension
         _completions.Add(completion);
     }
 
-    public static void SetCompletions(List<string> completions)
+    public static void SetCompletions(System.Collections.Generic.List<string> completions)
     {
         _completions = completions;
     }
 
-    public static List<string> GetCompletions()
+    public static System.Collections.Generic.List<string> GetCompletions()
     {
         return _completions;
     }
