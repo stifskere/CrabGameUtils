@@ -147,12 +147,12 @@ public class TextureReplacer : Extension
             {
                 string textureName = String.Join(" ", args[1..]).ToLower();
 
-                if (!string.IsNullOrEmpty(textureName) && Current != null)
+                if (string.IsNullOrEmpty(textureName) && Current != null)
                 {
                     Default = Current;
                     ChatBox.Instance.ForceMessage("<color=green>Default texture set to current.</color>");
                 }
-                else if (Textures!.ContainsKey(textureName))
+                else if (!string.IsNullOrEmpty(textureName) && Textures!.ContainsKey(textureName))
                 {
                     Default = Textures[textureName]!;
                     ChatBox.Instance.ForceMessage($"<color=green>Default texture set to {textureName}</color>");
