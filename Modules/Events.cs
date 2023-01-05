@@ -16,6 +16,11 @@ public class Events
     public delegate void PlayerDiedDelegate(ulong victim, ulong killer, Vector3 position);
 
     public static event PlayerDiedDelegate PlayerDiedEvent = null!;
+    
+    public delegate void GameUIStartDelegate(GameUI gameUI);
+
+    public static event GameUIStartDelegate GameUIStartEvent = null!;
+    
 
     [HarmonyPatch(typeof(GameManager), "RemovePlayer"), HarmonyPostfix]
     public static void RemovePlayer(GameManager __instance, ulong __0)
@@ -37,4 +42,9 @@ public class Events
     public static void SendMessage(ChatBox __instance, string __0)
         => ChatBoxSubmitEvent?.Invoke(__0);
 
+    [HarmonyPatch(typeof(GameUI), nameof(GameUI.Start)), HarmonyPostfix]
+    public static void GameUIStart(GameUI __instance)
+        => GameUIStartEvent?.Invoke(__instance);
+    
+    
 }
