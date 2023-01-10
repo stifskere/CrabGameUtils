@@ -5,6 +5,8 @@ using Color = UnityEngine.Color;
 [TextureName("Rainbow")]
 public class Rainbow : TextureReplacerTexture
 {
+    public ExtensionConfig<bool> lightsEnabled = new("lights enabled", false, "Defines if the plugin turns off the lights when it is enabled.");
+
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
     private System.Collections.Generic.Dictionary<int, Color> _lightColors = default!;
     private System.Collections.Generic.Dictionary<ulong, GameObject> _playerGameObjects = default!;
@@ -109,8 +111,8 @@ public class Rainbow : TextureReplacerTexture
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         foreach (Material rendererMaterial in renderer.materials)
             rendererMaterial.SetColor(Color1, Color.HSVToRGB(UnityEngine.Random.Range(0f, 1f), 1, 1));
-        
-        RenderSettings.ambientLight = new Color(0.07f, 0.07f, 0.07f);
+        if (!lightsEnabled.Value)
+            RenderSettings.ambientLight = new Color(0.07f, 0.07f, 0.07f);
     }
 
     public override void Disable()
