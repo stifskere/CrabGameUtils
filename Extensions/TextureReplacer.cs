@@ -8,23 +8,26 @@ public class TextureReplacer : Extension
 {
     public ExtensionConfig<string> Prefix = new("prefix", "!", "the prefix for commands related with this extension");
 
-    protected static System.Collections.Generic.Dictionary<string, TextureReplacerTexture>? Textures;
-    protected static TextureReplacerTexture? Current;
-    protected static TextureReplacerTexture? Default;
-    
+    private static System.Collections.Generic.Dictionary<string, TextureReplacerTexture>? _textures;
+    private static TextureReplacerTexture? _current;
+    private static TextureReplacerTexture? _default;
+
     public TextureReplacer()
     {
         Events.ChatBoxSubmitEvent += GetChatMessageLocal;
-        Textures = new();
+        _textures = new();
         
         foreach (Type texture in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(TextureReplacerTexture))))
         {
             string name = texture.GetCustomAttributesData().First(a => a.AttributeType.Name == "TextureNameAttribute").ConstructorArguments.First().Value?.ToString() ?? texture.Name;
             TextureReplacerTexture instance = (TextureReplacerTexture)System.Activator.CreateInstance(texture, null);
-            if (!Textures!.ContainsKey(name.ToLower()))
-                Textures.Add(name.ToLower(), instance);
+            if (!_textures!.ContainsKey(name.ToLower()))
+                _textures.Add(name.ToLower(), instance);
+            string trName = GetType().GetCustomAttributesData().First(a => a.AttributeType.Name == "ExtensionNameAttribute").ConstructorArguments.First().Value?.ToString() ?? GetType().Name;
+            foreach (FieldInfo field in texture.GetFields().Where(p => p.FieldType.Name.Contains("ExtensionConfig")))
+                field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { $"{trName} | {name}" });
         }
-        
+
         AddAutoCompletions();
     }
 
@@ -37,53 +40,53 @@ public class TextureReplacer : Extension
             AutoComplete.AddCompletion($"!textures help {i}");
         }
         AutoComplete.AddCompletion("!textures enable");
-        foreach (System.Collections.Generic.KeyValuePair<string, TextureReplacerTexture> texture in Textures!)
+        foreach (System.Collections.Generic.KeyValuePair<string, TextureReplacerTexture> texture in _textures!)
         {
             AutoComplete.AddCompletion($"!textures enable {texture.Key}");
         }
         AutoComplete.AddCompletion("!textures disable");
         AutoComplete.AddCompletion("!textures setdefault");
-        foreach (System.Collections.Generic.KeyValuePair<string, TextureReplacerTexture> texture in Textures)
+        foreach (System.Collections.Generic.KeyValuePair<string, TextureReplacerTexture> texture in _textures)
         {
             AutoComplete.AddCompletion($"!textures setdefault {texture.Key}");
         }
         AutoComplete.AddCompletion("!textures cleardefault");
     }
+
+    private void RemoveAutoCompletions()
+    {
+        AutoComplete.SetCompletions(AutoComplete.GetCompletions().Where(n => !n.StartsWith("!textures")).ToList());
+    }
     
     public override void Awake()
     {
         string? defaultName = Configuration.GlobalTemplate.TextureReplacer!.DefaultName;
-        if (defaultName != null && Textures!.ContainsKey(defaultName)) Default = Textures[defaultName];
+        if (defaultName != null && _textures!.ContainsKey(defaultName)) _default = _textures[defaultName];
     }
 
     public override void Start()
     {
-        if (Current != null) 
-        {
-            Disable(Current);
-            Current = null;
-        }
-
-        if (Default != null)
-        {
-            Current = Default;
-            Enable(Current);
-        }
+        foreach (TextureReplacerTexture texture in _textures!.Values) texture.Start();
         
-        foreach (TextureReplacerTexture texture in Textures!.Values) texture.Start();
+        if (_current != null) RemoveCurrent();
+        if (_default != null) SetCurrent(_default);
+
         ChatBox.Instance.ForceMessage($"<color=#00FFFF>Texture replacer loaded, type \"{Prefix.Value}textures help\" for help.</color>");
     }
     
     public override void Update()
     {
-        try { Current?.Update(); } catch { /**/ }
+        try
+        {
+            _current?.Update();
+        } catch { /**/ }
     }
 
     public void ProcessCommand(string[] args)
     {
         if (args.Length < 1)
         {
-            ChatBox.Instance.ForceMessage(Textures!.Keys.Aggregate("<color=#00FFFF>--- Textures list ---</color>", (s, s1) => $"{s}\n<color=green>- {s1}</color>"));
+            ChatBox.Instance.ForceMessage(_textures!.Keys.Aggregate("<color=#00FFFF>--- Textures list ---</color>", (s, s1) => $"{s}\n<color=green>- {s1}</color>"));
             return;
         }
         
@@ -95,27 +98,27 @@ public class TextureReplacer : Extension
 
                 if (textureName.Equals("random"))
                 {
-                    if (Textures!.Count == 0)
+                    if (_textures!.Count == 0)
                     {
                         ChatBox.Instance.ForceMessage("<color=red>Can't</color>");
                         return;
                     }
-                    SetCurrent(Textures.Values.ElementAt(UnityEngine.Random.Range(0, Textures.Count)));
+                    SetCurrent(_textures.Values.ElementAt(UnityEngine.Random.Range(0, _textures.Count)));
                     return;
                 }
                 
-                if (!Textures!.ContainsKey(textureName))
+                if (!_textures!.ContainsKey(textureName))
                 {
                     ChatBox.Instance.ForceMessage($"<color=red>Couldn't find any texture with \"{textureName}\"</color>");
                     return;
                 }
-                SetCurrent(Textures[textureName]);
+                SetCurrent(_textures[textureName]);
                 ChatBox.Instance.ForceMessage($"<color=green>{textureName} enabled.</color>");
             }
                 break;
             case "disable":
             {
-                if (Current == null)
+                if (_current == null)
                 {
                     ChatBox.Instance.ForceMessage("<color=yellow>Nothing to disable.</color>");
                     return;
@@ -147,14 +150,14 @@ public class TextureReplacer : Extension
             {
                 string textureName = String.Join(" ", args[1..]).ToLower();
 
-                if (string.IsNullOrEmpty(textureName) && Current != null)
+                if (string.IsNullOrEmpty(textureName) && _current != null)
                 {
-                    Default = Current;
+                    _default = _current;
                     ChatBox.Instance.ForceMessage("<color=green>Default texture set to current.</color>");
                 }
-                else if (!string.IsNullOrEmpty(textureName) && Textures!.ContainsKey(textureName))
+                else if (!string.IsNullOrEmpty(textureName) && _textures!.ContainsKey(textureName))
                 {
-                    Default = Textures[textureName]!;
+                    _default = _textures[textureName]!;
                     ChatBox.Instance.ForceMessage($"<color=green>Default texture set to {textureName}</color>");
                 }
                 else
@@ -163,23 +166,23 @@ public class TextureReplacer : Extension
                     return;
                 }
 
-                if (Current != null)
-                    Disable(Current);
+                if (_current != null)
+                    Disable(_current);
                 
-                Current = Default;
-                Enable(Current);
+                _current = _default;
+                Enable(_current);
 
-                // Configuration.GlobalTemplate.TextureReplacer!.DefaultName = textureName;
-                // Configuration.Write();
+                Configuration.GlobalTemplate.TextureReplacer!.DefaultName = textureName;
+                Configuration.Write();
                 
                 ChatBox.Instance.ForceMessage("<color=yellow>(Beta feature) enabled only for this game instance, this warning and the limitation will disapear in the next version.</color>");
             }
                 break;
             case "cleardefault":
-                if (Default != null)
+                if (_default != null)
                 {
                     RemoveCurrent();
-                    Default = null;
+                    _default = null;
                     ChatBox.Instance.ForceMessage("<color=green>Cleared default.</color>");
                     return;
                 }
@@ -194,15 +197,16 @@ public class TextureReplacer : Extension
 
     public static void SetCurrent(TextureReplacerTexture texture)
     {
-        if (Current != null) Disable(Current);
-        Current = texture;
-        Enable(Current);
+        if (_current != null) Disable(_current);
+        _current = texture;
+        Enable(_current);
     }
     
     public static void RemoveCurrent()
     {
-        Disable(Current!);
-        Current = null;
+        if (_current == null) return;
+        Disable(_current);
+        _current = null;
     }
 
     public static void Enable(TextureReplacerTexture texture)
