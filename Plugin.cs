@@ -1,6 +1,4 @@
-﻿
-using Exception = System.Exception;
-using Math = System.Math;
+﻿using Exception = System.Exception;
 
 namespace CrabGameUtils;
 
@@ -112,5 +110,16 @@ public static class CustomMethods
         if (value > max) return max;
         return value;
     }
+
+    public static Vector3 FillRandom(this Vector3 vector, int min, int max)
+    {
+        vector.x = UnityEngine.Random.Range(min, max);
+        vector.y = UnityEngine.Random.Range(min, max);
+        vector.z = UnityEngine.Random.Range(min, max);
+        return vector;
+    }
+
+    public static UnityEngine.Color ToColor(this Vector3 vector)
+        => new(vector.x, vector.y, vector.z);
 }
 

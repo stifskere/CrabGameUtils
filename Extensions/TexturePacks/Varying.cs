@@ -50,7 +50,6 @@ public class Varying : TextureReplacerTexture
             else //if enabled
             {
                 Color.RGBToHSV(new Color(FixValue(R.Value,0,255),FixValue(G.Value,0,255),FixValue(B.Value,0,255)), out float h, out _, out _);
-                
                 foreach (Material rendererMaterial in renderer.materials)
                 {
                     Debug.Log((h * 360).ToString(CultureInfo.CurrentCulture));
