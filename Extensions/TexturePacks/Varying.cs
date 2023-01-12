@@ -53,10 +53,10 @@ public class Varying : TextureReplacerTexture
                 
                 foreach (Material rendererMaterial in renderer.materials)
                 {
-                    Debug.Log((h * 360).ToString(CultureInfo.CurrentCulture));
-                    Instance.Log.LogError($"{FixValue((int)(h - (float)Randomness.Value / 100),0,1)} || {FixValue((int)(h + (float)Randomness.Value / 100),0,1)} ");
-                    rendererMaterial.color = UnityEngine.Random.ColorHSV(FixValue((int)(h * 360) - Randomness.Value / 100 ,0,1) ,FixValue((int)(h * 360) + Randomness.Value / 100,0,1) ,0f,1f,0.3f,1f);
-                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(FixValue((int)(h * 360) - Randomness.Value / 100,0,1),FixValue((int)(h * 360) + Randomness.Value / 100,0,1),0f,1f,0.3f,1f));
+                    
+                    Instance.Log.LogInfo($"{FixValue(h - FixValue(Randomness.Value / 100 ,0,100),0,1)} || {FixValue(h + FixValue(Randomness.Value / 100 ,0,100),0,1)}");
+                    rendererMaterial.color = UnityEngine.Random.ColorHSV(FixValue(h - FixValue(Randomness.Value / 100 ,0,100),0,1),FixValue(h + FixValue(Randomness.Value / 100,0,100),0,1));
+                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(FixValue(h - FixValue(Randomness.Value / 100,0,100),0,1),FixValue(h + FixValue(Randomness.Value / 100,0,100),0,1)));
                 }
                 
             }
