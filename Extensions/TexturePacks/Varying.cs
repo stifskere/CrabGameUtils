@@ -49,13 +49,14 @@ public class Varying : TextureReplacerTexture
             }
             else //if enabled
             {
-                float h = RGBtoH(FixValue(R.Value,0,255),FixValue(G.Value,0,255),FixValue(B.Value,0,255));
+                Color.RGBToHSV(new Color(FixValue(R.Value,0,255),FixValue(G.Value,0,255),FixValue(B.Value,0,255)), out float h, out _, out _);
                 
                 foreach (Material rendererMaterial in renderer.materials)
                 {
-                    Instance.Log.LogError($"{(float)FixValue((int)h - Randomness.Value / 100,0,1)} || {(float)FixValue((int)h + Randomness.Value / 100,0,1)} ");
-                    rendererMaterial.color = UnityEngine.Random.ColorHSV((float)FixValue((int)h - Randomness.Value / 100 ,0,1) ,(float)FixValue((int)h + Randomness.Value / 100,0,1) ,0f,1f,0.3f,1f);
-                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV((float)FixValue((int)h - Randomness.Value / 100,0,1),(float)FixValue((int)h + Randomness.Value / 100,0,1),0f,1f,0.3f,1f));
+                    Debug.Log((h * 360).ToString(CultureInfo.CurrentCulture));
+                    Instance.Log.LogError($"{FixValue((int)(h - (float)Randomness.Value / 100),0,1)} || {FixValue((int)(h + (float)Randomness.Value / 100),0,1)} ");
+                    rendererMaterial.color = UnityEngine.Random.ColorHSV(FixValue((int)(h * 360) - Randomness.Value / 100 ,0,1) ,FixValue((int)(h * 360) + Randomness.Value / 100,0,1) ,0f,1f,0.3f,1f);
+                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(FixValue((int)(h * 360) - Randomness.Value / 100,0,1),FixValue((int)(h * 360) + Randomness.Value / 100,0,1),0f,1f,0.3f,1f));
                 }
                 
             }

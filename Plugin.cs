@@ -1,5 +1,6 @@
 ﻿
 using Exception = System.Exception;
+using Math = System.Math;
 
 namespace CrabGameUtils;
 
@@ -111,6 +112,5 @@ public static class CustomMethods
         if (value > max) return max;
         return value;
     }
-
 }
 
