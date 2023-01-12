@@ -93,5 +93,24 @@ public class BepinexDetectionPatch {
 public static class CustomMethods
 {
     public static uint RandomColor() => (uint)new Random().Next(0x0, 0xFFFFFF);
+
+    public static float RGBtoH(int r, int g, int b)
+    {
+        int[] values = {r / 255,g / 255,b / 255};
+        int maxvalue = values.Max();
+        int minvalue = values.Min();
+
+        if (maxvalue == r / 255) return ((float)values[1] - values[2]) / (maxvalue - minvalue) ;
+        if (maxvalue == g / 255) return (float)2.0 + ((float)values[2] - values[0]) / (maxvalue - minvalue);
+        return (float)4.0 + ((float)values[0] - values[1]) / (maxvalue - minvalue);
+    }
+
+    public static int FixValue(int value, int min, int max)
+    {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
 }
 
