@@ -50,12 +50,22 @@ public class Varying : TextureReplacerTexture
             else //if enabled
             {
                 Color.RGBToHSV(new Color(FixValue(R.Value,0,255),FixValue(G.Value,0,255),FixValue(B.Value,0,255)), out float h, out _, out _);
+
+                float fixedRandomness = FixValue((float)Randomness.Value / 100, 0, 1);
+                float minhue = FixValue(h - fixedRandomness, 0, 1);
+                float maxhue = FixValue(h + fixedRandomness, 0, 1);
+                
+                
                 foreach (Material rendererMaterial in renderer.materials)
                 {
-                    
-                    Instance.Log.LogInfo($"{FixValue(h - FixValue(Randomness.Value / 100 ,0,100),0,1)} || {FixValue(h + FixValue(Randomness.Value / 100 ,0,100),0,1)}");
-                    rendererMaterial.color = UnityEngine.Random.ColorHSV(FixValue(h - FixValue(Randomness.Value / 100 ,0,100),0,1),FixValue(h + FixValue(Randomness.Value / 100,0,100),0,1));
-                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(FixValue(h - FixValue(Randomness.Value / 100,0,100),0,1),FixValue(h + FixValue(Randomness.Value / 100,0,100),0,1)));
+                    if (rendererMaterial.mainTexture)
+                    {
+                        Texture2D dest = new Texture2D(rendererMaterial.mainTexture.width, rendererMaterial.mainTexture.height, TextureFormat.RGBA32, false);
+                        Texture end = MakeGrayscale(dest);
+                        rendererMaterial.mainTexture = end;
+                    }
+                    rendererMaterial.color = UnityEngine.Random.ColorHSV(minhue,maxhue);
+                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(minhue,maxhue));
                 }
                 
             }
@@ -75,5 +85,19 @@ public class Varying : TextureReplacerTexture
             
         }
         
+    }
+
+    
+    Texture MakeGrayscale (Texture2D tex) 
+    {
+        var texColors = tex.GetPixels();
+        for (int i = 0; i < texColors.Length; i++) 
+        {
+            var grayValue = texColors[i].grayscale;
+            texColors[i] = new Color(grayValue, grayValue, grayValue, texColors[i].a);
+        }
+        tex.SetPixels(texColors);
+        tex.Apply();
+        return tex;
     }
 }
