@@ -10,6 +10,7 @@ public class Varying : TextureReplacerTexture
     public ExtensionConfig<int> G = new("Green Color", 0 , "Defines the Green value of a color, disabled at 0(max 255 || min 0)");
     public ExtensionConfig<int> B = new("Blue Color", 0 , "Defines the Blue value of a color, disabled at 0 (max 255 || min 0)");
     public ExtensionConfig<int> Randomness  = new("Randomness", 20 , "How close other colors are to the target one, (max 100 || min 0)");
+    public ExtensionConfig<int> TextureDetail  = new("TextureDetail", 10 , "How much pixels get skipped during the texture load (massively increases performance || higher number better performance)");
 
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
@@ -37,7 +38,6 @@ public class Varying : TextureReplacerTexture
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         {
             if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
-            
             //if disabled
             if (R.Value + G.Value + B.Value == 0)
             {
@@ -54,14 +54,14 @@ public class Varying : TextureReplacerTexture
                 float fixedRandomness = FixValue((float)Randomness.Value / 100, 0, 1);
                 float minhue = FixValue(h - fixedRandomness, 0, 1);
                 float maxhue = FixValue(h + fixedRandomness, 0, 1);
-                
+                int skip = TextureDetail.Value;
                 
                 foreach (Material rendererMaterial in renderer.materials)
                 {
                     if (rendererMaterial.mainTexture)
                     {
-                        Texture2D dest = new Texture2D(rendererMaterial.mainTexture.width, rendererMaterial.mainTexture.height, TextureFormat.RGBA32, false);
-                        Texture end = MakeGrayscale(dest);
+                        Texture2D dest = new Texture2D(rendererMaterial.mainTexture.width / skip, rendererMaterial.mainTexture.height / skip, TextureFormat.RGBA32, false);
+                        Texture end = MakeGrayscale(dest , skip);
                         rendererMaterial.mainTexture = end;
                     }
                     rendererMaterial.color = UnityEngine.Random.ColorHSV(minhue,maxhue);
@@ -88,13 +88,17 @@ public class Varying : TextureReplacerTexture
     }
 
     
-    Texture MakeGrayscale (Texture2D tex) 
+    Texture MakeGrayscale (Texture2D tex , int skip) 
     {
         var texColors = tex.GetPixels();
         for (int i = 0; i < texColors.Length; i++) 
         {
-            var grayValue = texColors[i].grayscale;
-            texColors[i] = new Color(grayValue, grayValue, grayValue, texColors[i].a);
+            if (i % skip == 0)
+            {
+                var grayValue = texColors[i].grayscale;
+                texColors[i] = new Color(grayValue, grayValue, grayValue, texColors[i].a);
+            }
+            
         }
         tex.SetPixels(texColors);
         tex.Apply();
