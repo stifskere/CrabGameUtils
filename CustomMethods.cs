@@ -2,6 +2,7 @@ using Color = UnityEngine.Color;
 
 namespace CrabGameUtils;
 
+// ReSharper disable UnusedMember.Global
 public static class CustomMethods
 {
     public static uint RandomColor() => (uint)new Random().Next(0x0, 0xFFFFFF);
