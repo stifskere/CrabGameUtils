@@ -24,7 +24,7 @@ public class Plugin : BasePlugin
         
         foreach (Type type in Assembly.GetAssembly(typeof(Extension)).GetTypes().Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(Extension))))
         {
-            string name = type.GetCustomAttributesData().First(a => a.AttributeType.Name == "ExtensionNameAttribute").ConstructorArguments.First().Value?.ToString() ?? type.Name;
+            string name = type.GetCustomAttributesData().FirstOrDefault(a => a.AttributeType.Name == "ExtensionNameAttribute")?.ConstructorArguments.First().Value?.ToString() ?? type.Name;
             Extension instance = (Extension)System.Activator.CreateInstance(type, null);
             foreach (FieldInfo field in type.GetFields().Where(p => p.FieldType.Name.Contains("ExtensionConfig")))
                 field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name });
