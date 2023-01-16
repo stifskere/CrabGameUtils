@@ -8,10 +8,7 @@ public class Smooth : TextureReplacerTexture
 {
     private Texture _texture = default!;
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
-    private static readonly int Color1 = Shader.PropertyToID("_Color");
-    private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     private static readonly int MainTex = Shader.PropertyToID("_MainTex");
-    private static readonly int BumpMap = Shader.PropertyToID("_BumpMap");
 
     public override void Start()
     {
@@ -57,11 +54,7 @@ public class Smooth : TextureReplacerTexture
             if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
             foreach (Material rendererMaterial in renderer.materials)
             {
-                int[] textures = rendererMaterial.GetTexturePropertyNameIDs();
-                foreach (int texture in textures)
-                {
-                    rendererMaterial.SetTexture(texture, null);
-                }
+                rendererMaterial.SetTextureScale( MainTex ,new Vector2(100,100));
             }
         }
     }
