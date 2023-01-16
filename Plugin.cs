@@ -9,9 +9,10 @@ public class Plugin : BasePlugin
     public static SteamManager Steam { get; set; } = SteamManager.Instance;
     public static Plugin Instance { get; set; } = null!;
     public static ConfigFile StaticConfig { get; set; } = null!;
+    public static MonoBehaviourPublicCSDi2UIInstObUIloDiUnique GameModeManager { get; set; } = null!;
     public static Modules.Config.Config Configuration { get; } = new($@"{Directory.GetCurrentDirectory()}\BepInEx\plugins\CrabGameUtilsData.json");
     
-    public static SystemCollections.List<Extension> ExtensionInstances { get; } = new();
+    public static SystemCollections.List<Extension> ExtensionInstances { get; set; } = new();
     
     public override void Load()
     {
@@ -44,10 +45,12 @@ public class Plugin : BasePlugin
             try { extension.Awake(); }
             catch (Exception e)
             {
+                extension.Enabled.Value = false;
                 ChatBox.Instance.ForceMessage($"<color=red>{extension.Name} errored (see logs for more details)</color>");
                 Instance.Log.LogError(e.ToString());
             }
         }
+        ExtensionInstances = ExtensionInstances.Where(e => e.Enabled.Value).ToList();
     }
 
     [HarmonyPatch(typeof(GameUI), "Start"), HarmonyPostfix]
@@ -63,6 +66,7 @@ public class Plugin : BasePlugin
                 Instance.Log.LogError(e.ToString());
             }
         }
+        ExtensionInstances = ExtensionInstances.Where(e => e.Enabled.Value).ToList();
     }
 
     [HarmonyPatch(typeof(GameUI), "Update"), HarmonyPostfix]
@@ -78,6 +82,7 @@ public class Plugin : BasePlugin
                 Instance.Log.LogError(e.ToString());
             }
         }
+        ExtensionInstances = ExtensionInstances.Where(e => e.Enabled.Value).ToList();
     }
 }
 
@@ -93,5 +98,16 @@ public class BepinexDetectionPatch {
 public static class CustomMethods
 {
     public static uint RandomColor() => (uint)new Random().Next(0x0, 0xFFFFFF);
+    
+    public static bool IsPractice(){
+        if (GameModeManager == null){
+            GameObject managers = GameObject.Find("/Managers");
+            GameModeManager = managers.GetComponent<MonoBehaviourPublicCSDi2UIInstObUIloDiUnique>();
+        }
+        if (GameModeManager == null){
+            return false;
+        }
+        return GameModeManager.gameMode.modeName == "Practice";
+    }
 }
 

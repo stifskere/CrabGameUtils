@@ -29,7 +29,7 @@
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
         </Reference>
         <Reference Include="Unity.TextMeshPro">
-          <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Unity.TextMeshPro.dll</HintPath>
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\Unity.TextMeshPro.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.dll</HintPath>
@@ -42,6 +42,9 @@
         </Reference>
         <Reference Include="UnityEngine.InputLegacyModule">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+          <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.UI">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Crab Game\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
