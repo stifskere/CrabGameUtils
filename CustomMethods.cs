@@ -29,4 +29,21 @@ public static class CustomMethods
     {
         color = Color.HSVToRGB(UnityEngine.Random.Range(0, 255), 255, 255);
     }
+    
+    public static Texture MakeGrayscale (Texture2D tex , int skip) 
+    {
+        var texColors = tex.GetPixels();
+        for (int i = 0; i < texColors.Length; i++) 
+        {
+            if (i % skip == 0)
+            {
+                var grayValue = texColors[i].grayscale;
+                texColors[i] = new Color(grayValue, grayValue, grayValue, texColors[i].a);
+            }
+            
+        }
+        tex.SetPixels(texColors);
+        tex.Apply();
+        return tex;
+    }
 }
