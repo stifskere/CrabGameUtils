@@ -65,7 +65,7 @@ public class SendSteamId : Extension
         foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.activePlayers)
             descriptionFields += $"\u001b[33mName\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.username ?? "username not found."}\u001b[0m\n\u001b[33mSteam Profile\u001b[0m\u001b[30m:\u001b[0m \u001b[32mhttps://steamcommunity.com/profiles/{player.Value.steamProfile.m_SteamID.ToString() ?? "user steam id not found"}\u001b[0m\n\u001b[33mNumber\u001b[0m\u001b[30m:\u001b[0m \u001b[32m #{player.Value.playerNumber.ToString()}\u001b[0m\n\n";
         foreach (KeyValuePair<ulong, CPlayer> player in GameManager.Instance.spectators)
-            descriptionFields += $"\u001b[33mName\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.username}\u001b[0m\n\u001b[33mSteamID64\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.steamProfile.m_SteamID.ToString() ?? "user steam id not found"}\u001b[0m\n\u001b[33mNumber\u001b[0m\u001b[30m:\u001b[0m \u001b[31m Spectator \u001b[0m\n\n";
+            descriptionFields += $"\u001b[33mName\u001b[0m\u001b[30m:\u001b[0m \u001b[32m{player.Value.username}\u001b[0m\n\u001b[33mSteamID64\u001b[0m\u001b[30m:\u001b[0m \u001b[32mhttps://steamcommunity.com/profiles/{player.Value.steamProfile.m_SteamID.ToString() ?? "user steam id not found"}\u001b[0m\n\u001b[33mNumber\u001b[0m\u001b[30m:\u001b[0m \u001b[31m Spectator \u001b[0m\n\n";
 
         EmbedBuilder embed = new EmbedBuilder()
             .SetTitle("User list")
