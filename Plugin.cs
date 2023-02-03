@@ -1,5 +1,4 @@
-﻿
-using Exception = System.Exception;
+﻿using Exception = System.Exception;
 
 namespace CrabGameUtils;
 
@@ -94,20 +93,3 @@ public class BepinexDetectionPatch {
     [HarmonyPatch(typeof(MonoBehaviourPublicTeplUnique), "Method_Private_Void_PDM_32")]
     [HarmonyPrefix] public static bool Prefix(MethodBase __originalMethod) => false;
 }
-
-public static class CustomMethods
-{
-    public static uint RandomColor() => (uint)new Random().Next(0x0, 0xFFFFFF);
-    
-    public static bool IsPractice(){
-        if (GameModeManager == null){
-            GameObject managers = GameObject.Find("/Managers");
-            GameModeManager = managers.GetComponent<MonoBehaviourPublicCSDi2UIInstObUIloDiUnique>();
-        }
-        if (GameModeManager == null){
-            return false;
-        }
-        return GameModeManager.gameMode.modeName == "Practice";
-    }
-}
-

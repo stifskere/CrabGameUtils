@@ -6,6 +6,12 @@ namespace CrabGameUtils.Extensions.TexturePacks;
 [TextureName("Varying")]
 public class Varying : TextureReplacerTexture
 {
+    public ExtensionConfig<int> R = new("Red Value", 0 , "Defines the Red value of a color, disabled at 0(max 255 || min 0)");
+    public ExtensionConfig<int> G = new("Green Color", 0 , "Defines the Green value of a color, disabled at 0(max 255 || min 0)");
+    public ExtensionConfig<int> B = new("Blue Color", 0 , "Defines the Blue value of a color, disabled at 0 (max 255 || min 0)");
+    public ExtensionConfig<int> Randomness  = new("Randomness", 20 , "How close other colors are to the target one, (max 100 || min 0)");
+    public ExtensionConfig<int> TextureDetail  = new("TextureDetail", 10 , "How much pixels get skipped during the texture load (massively increases performance || higher number better performance)");
+
     private System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<Material>> _materials = default!;
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
@@ -32,11 +38,38 @@ public class Varying : TextureReplacerTexture
         foreach (Renderer renderer in Object.FindObjectsOfType<Renderer>())
         {
             if (!_materials.ContainsKey(renderer.GetInstanceID())) _materials[renderer.GetInstanceID()] = renderer.materials.Select(material => new Material(material)).ToList();
-            foreach (Material rendererMaterial in renderer.materials)
+            //if disabled
+            if (R.Value + G.Value + B.Value == 0)
             {
-                rendererMaterial.color = UnityEngine.Random.ColorHSV(0f,1f,0f,1f,0.3f,1f);
-                rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(0f,1f,0f,1f,0.3f,1f));
+                foreach (Material rendererMaterial in renderer.materials)
+                {
+                    rendererMaterial.color = UnityEngine.Random.ColorHSV(0f,1f,0f,1f,0.3f,1f);
+                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(0f,1f,0f,1f,0.3f,1f));
+                }
             }
+            else //if enabled
+            {
+                Color.RGBToHSV(new Color(FixValue(R.Value,0,255),FixValue(G.Value,0,255),FixValue(B.Value,0,255)), out float h, out _, out _);
+
+                float fixedRandomness = FixValue((float)Randomness.Value / 100, 0, 1);
+                float minhue = FixValue(h - fixedRandomness, 0, 1);
+                float maxhue = FixValue(h + fixedRandomness, 0, 1);
+                int skip = TextureDetail.Value;
+                
+                foreach (Material rendererMaterial in renderer.materials)
+                {
+                    if (rendererMaterial.mainTexture)
+                    {
+                        Texture2D dest = new Texture2D(rendererMaterial.mainTexture.width / skip, rendererMaterial.mainTexture.height / skip, TextureFormat.RGBA32, false);
+                        Texture end = MakeGrayscale(dest , skip);
+                        rendererMaterial.mainTexture = end;
+                    }
+                    rendererMaterial.color = UnityEngine.Random.ColorHSV(minhue,maxhue);
+                    rendererMaterial.SetColor(EmissionColor, UnityEngine.Random.ColorHSV(minhue,maxhue));
+                }
+                
+            }
+            
         }
     }
 
@@ -49,7 +82,6 @@ public class Varying : TextureReplacerTexture
             if (!_materials.ContainsKey(renderer.GetInstanceID())) continue;
             foreach (Material material in renderer.materials) Object.Destroy(material);
             renderer.materials = _materials[renderer.GetInstanceID()].ToArray();
-            
             
         }
         
