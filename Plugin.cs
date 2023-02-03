@@ -8,9 +8,10 @@ public class Plugin : BasePlugin
     public static SteamManager Steam { get; set; } = SteamManager.Instance;
     public static Plugin Instance { get; set; } = null!;
     public static ConfigFile StaticConfig { get; set; } = null!;
+    public static MonoBehaviourPublicCSDi2UIInstObUIloDiUnique GameModeManager { get; set; } = null!;
     public static Modules.Config.Config Configuration { get; } = new($@"{Directory.GetCurrentDirectory()}\BepInEx\plugins\CrabGameUtilsData.json");
     
-    public static SystemCollections.List<Extension> ExtensionInstances { get; } = new();
+    public static SystemCollections.List<Extension> ExtensionInstances { get; set; } = new();
     
     public override void Load()
     {
@@ -23,7 +24,7 @@ public class Plugin : BasePlugin
         
         foreach (Type type in Assembly.GetAssembly(typeof(Extension)).GetTypes().Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(Extension))))
         {
-            string name = type.GetCustomAttributesData().First(a => a.AttributeType.Name == "ExtensionNameAttribute").ConstructorArguments.First().Value?.ToString() ?? type.Name;
+            string name = type.GetCustomAttributesData().FirstOrDefault(a => a.AttributeType.Name == "ExtensionNameAttribute")?.ConstructorArguments.First().Value?.ToString() ?? type.Name;
             Extension instance = (Extension)System.Activator.CreateInstance(type, null);
             foreach (FieldInfo field in type.GetFields().Where(p => p.FieldType.Name.Contains("ExtensionConfig")))
                 field.GetValue(instance).GetType().GetMethod("InitConfig")!.Invoke(field.GetValue(instance), new object[] { name });
@@ -43,10 +44,12 @@ public class Plugin : BasePlugin
             try { extension.Awake(); }
             catch (Exception e)
             {
+                extension.Enabled.Value = false;
                 ChatBox.Instance.ForceMessage($"<color=red>{extension.Name} errored (see logs for more details)</color>");
                 Instance.Log.LogError(e.ToString());
             }
         }
+        ExtensionInstances = ExtensionInstances.Where(e => e.Enabled.Value).ToList();
     }
 
     [HarmonyPatch(typeof(GameUI), "Start"), HarmonyPostfix]
@@ -62,6 +65,7 @@ public class Plugin : BasePlugin
                 Instance.Log.LogError(e.ToString());
             }
         }
+        ExtensionInstances = ExtensionInstances.Where(e => e.Enabled.Value).ToList();
     }
 
     [HarmonyPatch(typeof(GameUI), "Update"), HarmonyPostfix]
@@ -77,6 +81,7 @@ public class Plugin : BasePlugin
                 Instance.Log.LogError(e.ToString());
             }
         }
+        ExtensionInstances = ExtensionInstances.Where(e => e.Enabled.Value).ToList();
     }
 }
 

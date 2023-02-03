@@ -19,7 +19,7 @@ public class TextureReplacer : Extension
         
         foreach (Type texture in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(TextureReplacerTexture))))
         {
-            string name = texture.GetCustomAttributesData().First(a => a.AttributeType.Name == "TextureNameAttribute").ConstructorArguments.First().Value?.ToString() ?? texture.Name;
+            string name = texture.GetCustomAttributesData().FirstOrDefault(a => a.AttributeType.Name == "TextureNameAttribute")?.ConstructorArguments.First().Value?.ToString() ?? texture.Name;
             TextureReplacerTexture instance = (TextureReplacerTexture)System.Activator.CreateInstance(texture, null);
             if (!_textures!.ContainsKey(name.ToLower()))
                 _textures.Add(name.ToLower(), instance);

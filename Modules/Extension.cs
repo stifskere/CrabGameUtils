@@ -1,4 +1,6 @@
 ﻿
+using Action = System.Action;
+
 namespace CrabGameUtils.Modules;
 
 public abstract class Extension
@@ -9,11 +11,15 @@ public abstract class Extension
     public abstract void Start();
     public abstract void Update();
     
-    public void ThrowError(string message)
+    protected void ThrowError(string message)
     {
         Enabled.Value = false;
         ChatBox.Instance.ForceMessage($"<color=red>{message}</color>");
-        ExtensionInstances.Remove(this);
+    }
+
+    protected void Disable()
+    {
+        Enabled.Value = false;
     }
 }
 
